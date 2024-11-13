@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">AMP_G01_Reading_App</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="th_m_t_i_kho_n">Thêm tài khoản</string>
+    <string name="add_account">Thêm tài khoản cho con</string>
+    <string name="change_pass_des">Đổi mật khẩu</string>
+    <string name="change_password">Đổi mật khẩu</string>
+    <string name="view_management_dashboard">Xem trang quản lý</string>
+    <string name="management_title">Quản lý</string>
+    <string name="time_limit">Giới hạn thời gian</string>
+    <string name="age_limit">Giới hạn độ tuổi</string>
+    <string name="Settings">Cài đặt</string>
+    <string name="personal">Cá nhân</string>
+    <string name="log_out">Đăng xuất</string>
+</resources>
