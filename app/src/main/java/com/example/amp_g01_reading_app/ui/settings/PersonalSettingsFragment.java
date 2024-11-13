@@ -12,7 +12,7 @@ import com.example.amp_g01_reading_app.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link PersonalSettingsFragment#newInstance} factory method to
+ * Use the {@link PersonalSettingsFragment} factory method to
  * create an instance of this fragment.
  */
 public class PersonalSettingsFragment extends Fragment {

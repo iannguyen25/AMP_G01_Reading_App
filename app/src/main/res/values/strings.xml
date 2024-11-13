@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">AMP_G01_Reading_App</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="settings">Settings</string>
+    <string name="title_home">Trang chủ</string>
+    <string name="settings">Cài đặt</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="th_m_t_i_kho_n">Thêm tài khoản</string>
@@ -17,4 +15,6 @@
     <string name="Settings">Cài đặt</string>
     <string name="personal">Cá nhân</string>
     <string name="log_out">Đăng xuất</string>
+    <string name="category">Thể loại</string>
+    <string name="library">Thư viện</string>
 </resources>

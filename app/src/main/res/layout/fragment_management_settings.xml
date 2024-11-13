@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:id="@+id/management_settings_fragment"
     android:padding="16dp"
     android:background="#FFFFFF">
 
@@ -18,18 +19,22 @@
 
     <!-- Giới hạn thời gian -->
     <LinearLayout
+        android:id="@+id/time_limit_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="12dp"
         android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:contentDescription="@string/time_limit"
-            android:src="@drawable/ic_home_black_24dp" />
+            android:src="@drawable/ic_timer" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -41,10 +46,14 @@
 
     <!-- Giới hạn độ tuổi -->
     <LinearLayout
+        android:id="@+id/age_limit_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
         android:gravity="center_vertical"
         tools:ignore="UseCompoundDrawables">
 
@@ -64,10 +73,14 @@
 
     <!-- Xem trang quản lý -->
     <LinearLayout
+        android:id="@+id/dashboard_management_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
         android:gravity="center_vertical"
         tools:ignore="UseCompoundDrawables">
 
