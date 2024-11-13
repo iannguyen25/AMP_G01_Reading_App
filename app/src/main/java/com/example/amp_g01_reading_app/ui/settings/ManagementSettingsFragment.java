@@ -30,6 +30,13 @@ public class ManagementSettingsFragment extends Fragment {
             dialogFragment.show(getChildFragmentManager(), "timeLimitDialog");
         });
 
+        LinearLayout age_limit_label = view.findViewById(R.id.age_limit_fragment);
+        age_limit_label.setOnClickListener(v -> {
+
+            AgeLimitFragment dialogFragment = new AgeLimitFragment();
+            dialogFragment.show(getChildFragmentManager(), "ageLimitDialog");
+        });
+
         return view;
     }
 }
