@@ -3,11 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/age_limit_fragment"
+    android:id="@+id/notification_dialog_fragment"
     android:background="#80000000">  <!-- Background mờ -->
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:id="@+id/notification_dialog_container"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@android:color/white"
@@ -21,56 +22,28 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginBottom="16dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_person"
-                android:layout_marginEnd="8dp"/>
-
             <TextView
+                android:id="@+id/notification_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black"
-                android:text="Giới hạn độ tuổi"
+                android:maxLines="2"
+                android:gravity="center"
+                android:text="Thông báo"
                 android:textSize="18sp"
                 android:textStyle="bold"/>
-
-            <ImageButton
-                android:id="@+id/btnClose"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_close"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Close"/>
         </LinearLayout>
 
         <!-- Current age range text -->
         <TextView
+            android:id="@+id/notification_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:text="Độ tuổi hiện tại đang chọn"
+            android:gravity="center"
+            android:text="Nội dung thông báo"
             android:layout_marginBottom="8dp"/>
-
-        <TextView
-            android:id="@+id/tvCurrentAge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="6 - 8 tuổi"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Spinner/Dropdown -->
-        <Spinner
-            android:id="@+id/spinnerAgeRange"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown"
-            android:layout_marginBottom="24dp"/>
 
         <!-- Buttons -->
         <LinearLayout
@@ -84,15 +57,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Xác nhận"
-                android:layout_marginEnd="8dp"/>
-
-            <Button
-                android:id="@+id/btnCancel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Huỷ"/>
+                android:text="Xác nhận"/>
         </LinearLayout>
 
     </LinearLayout>

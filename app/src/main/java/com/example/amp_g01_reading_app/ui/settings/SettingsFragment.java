@@ -4,14 +4,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import com.example.amp_g01_reading_app.ui.ConfirmDialogFragment;
 import com.example.amp_g01_reading_app.R;
 
 public class SettingsFragment extends Fragment {
@@ -28,6 +28,12 @@ public class SettingsFragment extends Fragment {
                 .replace(R.id.personalSettingsContainer, new PersonalSettingsFragment())
                 .replace(R.id.managementSettingsContainer, new ManagementSettingsFragment())
                 .commit();
+
+        LinearLayout log_out_button = view.findViewById(R.id.log_out_button);
+        log_out_button.setOnClickListener(v -> {
+            ConfirmDialogFragment dialogFragment = new ConfirmDialogFragment();
+            dialogFragment.show(getChildFragmentManager(), "confirm_dialog");
+        });
 
         return view;
     }
