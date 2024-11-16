@@ -5,14 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/parent_dashboard_fragment"
-    android:background="@color/white"
+    android:background="@color/white_2"
     android:orientation="vertical"
     android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
         <ImageView
             android:id="@+id/icon_back"
             android:layout_width="24dp"
@@ -24,6 +26,7 @@
         </ImageView>
 
         <TextView
+            android:id="@+id/app_bar_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -35,135 +38,105 @@
         </TextView>
     </LinearLayout>
 
-
-
-    <LinearLayout
-        android:layout_marginTop="12sp"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginHorizontal="36dp"
+        android:layout_marginTop="32dp">
 
-        <ImageView
-            android:id="@+id/iv_user_profile"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/ic_person"
-            app:layout_constraintStart_toStartOf="@id/icon_back"
-            app:layout_constraintTop_toTopOf="@id/icon_back" />
+        <!-- Ảnh đại diện -->
 
+        <!-- Container thông tin -->
         <LinearLayout
-            android:gravity="center|start"
+            android:id="@+id/container_information"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/profile_information"
+            android:paddingStart="100dp"
+            android:paddingEnd="16dp"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/tv_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:textSize="18sp"
-                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textColor="@color/white"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/iv_user_profile"
-                app:layout_constraintTop_toTopOf="@+id/iv_user_profile"
                 tools:text="Justin" />
 
             <TextView
                 android:id="@+id/tv_user_age"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@+id/iv_user_profile"
-                app:layout_constraintTop_toBottomOf="@+id/tv_user_name"
+                android:textColor="@color/white"
+                android:textSize="18sp"
                 tools:text="8 y.o." />
-
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/iv_user_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-20dp"
+            android:layout_marginTop="-20dp"
+            android:src="@drawable/ic_person"
+            android:background="@drawable/image_profile"
+            android:contentDescription="Image Profile"
 
-    </LinearLayout>
+            tools:ignore="HardcodedText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <ProgressBar
-        android:id="@+id/pb_books_read"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:max="100"
-        android:progress="0"
-        app:layout_constraintTop_toBottomOf="@+id/iv_user_profile" />
-
-    <ProgressBar
-        android:id="@+id/pb_videos_watched"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:max="100"
-        android:progress="0"
-        app:layout_constraintTop_toBottomOf="@+id/pb_books_read" />
-
-    <ProgressBar
-        android:id="@+id/pb_articles_read"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:max="100"
-        android:progress="0"
-        app:layout_constraintTop_toBottomOf="@+id/pb_videos_watched" />
-
-    <ProgressBar
-        android:id="@+id/pb_tests_finished"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:max="100"
-        android:progress="0"
-        app:layout_constraintTop_toBottomOf="@+id/pb_articles_read" />
 
     <LinearLayout
-        android:id="@+id/ll_stats"
+        android:layout_marginTop="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        android:weightSum="4"
-        app:layout_constraintTop_toBottomOf="@+id/pb_tests_finished">
+        android:orientation="vertical">
 
-        <View
-            android:id="@+id/view_books"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:background="#8065FF" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Trong 7 ngày gần nhất"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="26sp"
+            android:gravity="center">
+        </TextView>
 
-        <View
-            android:id="@+id/view_videos"
-            android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:layout_weight="1"
-            android:background="#8065FF" />
+        <TextView
+            android:id="@+id/time_average"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="#FFFF8B20"
+            android:text="34 phút"
+            android:textStyle="bold"
+            android:textSize="34sp"
+            android:gravity="center">
+        </TextView>
 
-        <View
-            android:id="@+id/view_articles"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_weight="1"
-            android:background="#8065FF" />
-
-        <View
-            android:id="@+id/view_tests"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:background="#8065FF" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/black"
+            android:text="thời gian đọc trung bình"
+            android:textSize="18sp"
+            android:gravity="center">
+        </TextView>
 
     </LinearLayout>
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>
