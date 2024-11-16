@@ -3,13 +3,13 @@ package com.example.amp_g01_reading_app.ui.settings;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.amp_g01_reading_app.R;
 
@@ -35,6 +35,13 @@ public class ManagementSettingsFragment extends Fragment {
 
             AgeLimitFragment dialogFragment = new AgeLimitFragment();
             dialogFragment.show(getChildFragmentManager(), "ageLimitDialog");
+        });
+
+        LinearLayout dash_board_label = view.findViewById(R.id.dashboard_management_fragment);
+
+        dash_board_label.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+            navController.navigate(R.id.navigation_dashboard); // ID của DashboardFragment trong nav_graph.xml
         });
 
         return view;

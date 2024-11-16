@@ -1,16 +1,12 @@
 package com.example.amp_g01_reading_app.ui.settings.dashboard_management;
-
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,7 +18,7 @@ public class ParentDashboardFragment extends Fragment {
     private TextView tvUserName, tvUserAge;
     private ProgressBar pbBooksRead, pbVideosWatched, pbArticlesRead, pbTestsFinished;
     private LinearLayout barChartStats;
-
+    private ImageView closeButton;
     public ParentDashboardFragment() {
         // Required empty public constructor
     }
@@ -35,6 +31,7 @@ public class ParentDashboardFragment extends Fragment {
 
         // Initialize views
         tvUserName = view.findViewById(R.id.tv_user_name);
+        closeButton = view.findViewById(R.id.icon_back);
         tvUserAge = view.findViewById(R.id.tv_user_age);
         pbBooksRead = view.findViewById(R.id.pb_books_read);
         pbVideosWatched = view.findViewById(R.id.pb_videos_watched);
@@ -49,6 +46,11 @@ public class ParentDashboardFragment extends Fragment {
         pbVideosWatched.setProgress(20);
         pbArticlesRead.setProgress(15);
         pbTestsFinished.setProgress(25);
+
+        closeButton.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+            navController.navigate(R.id.navigation_settings);
+        });
 
         return view;
     }

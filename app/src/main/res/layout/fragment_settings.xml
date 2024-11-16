@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#F2F3F7"
+    android:id="@+id/settings_fragment"
     tools:ignore="ExtraText">
 
     <!-- Phần tiêu đề -->
