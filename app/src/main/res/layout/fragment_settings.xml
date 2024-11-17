@@ -1,65 +1,69 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#F2F3F7"
-    android:id="@+id/settings_fragment"
-    tools:ignore="ExtraText">
-
-    <!-- Phần tiêu đề -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:textColor="@color/black"
-        android:text="@string/Settings"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center_vertical"
-        android:drawablePadding="8dp"
-        app:drawableLeftCompat="@drawable/ic_home_black_24dp" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="325dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/background_settings" />
-
-
-    <!-- Fragment cho cài đặt cá nhân -->
-    <FrameLayout
-        android:id="@+id/personalSettingsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
-
-    <!-- Fragment cho cài đặt quản lý -->
-    <FrameLayout
-        android:id="@+id/managementSettingsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
+    android:fillViewport="true"
+    android:paddingBottom="56dp"> <!-- Quan trọng để kéo dài chiều cao con -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/log_out_button"
         android:orientation="vertical"
-        android:layout_marginTop="8dp" >
+        android:id="@+id/settings_fragment">
 
+        <!-- Phần tiêu đề -->
         <TextView
-            android:background="@color/white"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="28dp"
+            android:padding="16dp"
             android:textColor="@color/black"
-            android:text="@string/log_out"
+            android:text="@string/Settings"
+            android:textSize="24sp"
+            android:textStyle="bold"
             android:gravity="center_vertical"
             android:drawablePadding="8dp"
             app:drawableLeftCompat="@drawable/ic_home_black_24dp" />
-    </LinearLayout>
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="325dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/background_settings" />
+
+        <!-- Fragment cho cài đặt cá nhân -->
+        <FrameLayout
+            android:id="@+id/personalSettingsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <!-- Fragment cho cài đặt quản lý -->
+        <FrameLayout
+            android:id="@+id/managementSettingsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/log_out_button"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp" >
+
+            <TextView
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="28dp"
+                android:textColor="@color/black"
+                android:text="@string/log_out"
+                android:gravity="center_vertical"
+                android:drawablePadding="8dp"
+                app:drawableLeftCompat="@drawable/ic_home_black_24dp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

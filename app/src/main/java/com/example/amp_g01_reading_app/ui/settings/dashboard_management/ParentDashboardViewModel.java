@@ -16,21 +16,7 @@ public class ParentDashboardViewModel extends ViewModel {
     public ParentDashboardViewModel() {
         userName = new MutableLiveData<>();
         userAge = new MutableLiveData<>();
-        readingTimesEntries = new MutableLiveData<>();
-
-        // Initialize with some sample data
-        userName.setValue("Tuấn Anh");
-        userAge.setValue("21 tuổi");
-
-        List<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(0, 24.0f));
-        entries.add(new BarEntry(1, 12.5f));
-        entries.add(new BarEntry(2, 19.8f));
-        entries.add(new BarEntry(3, 10.1f));
-        entries.add(new BarEntry(4, 18.4f));
-        entries.add(new BarEntry(5, 2.7f));
-        entries.add(new BarEntry(6, 18.9f));
-        readingTimesEntries.setValue(entries);
+        readingTimesEntries = new MutableLiveData<>(new ArrayList<>());
     }
 
     public LiveData<String> getUserName() {
@@ -45,7 +31,6 @@ public class ParentDashboardViewModel extends ViewModel {
         return readingTimesEntries;
     }
 
-    // Optional: Method to update time limit dynamically
     public void updateReadingTime(List<BarEntry> newEntries) {
         readingTimesEntries.setValue(newEntries);
     }
