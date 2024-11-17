@@ -1,17 +1,17 @@
 package com.example.amp_g01_reading_app.ui.settings.dashboard_management;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.example.amp_g01_reading_app.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -20,16 +20,14 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class ParentDashboardFragment extends Fragment {
 
     private TextView tvUserName, tvUserAge;
     private ImageView closeButton;
-
     private BarChart barChart;
+    private ParentDashboardViewModel parentDashboardViewModel;
 
     public ParentDashboardFragment() {
         // Required empty public constructor
@@ -45,41 +43,50 @@ public class ParentDashboardFragment extends Fragment {
         tvUserName = view.findViewById(R.id.tv_user_name);
         closeButton = view.findViewById(R.id.icon_back);
         tvUserAge = view.findViewById(R.id.tv_user_age);
-
         barChart = view.findViewById(R.id.barChart);
 
-        // Set sample data
-        tvUserName.setText("Tuấn Anh");
-        tvUserAge.setText("21 tuổi");
+        // Initialize ViewModel
+        parentDashboardViewModel = new ViewModelProvider(this).get(ParentDashboardViewModel.class);
 
-        List<BarEntry> readingTimesEntries = new ArrayList<>();
-        readingTimesEntries.add(new BarEntry(0, 24.0f));
-        readingTimesEntries.add(new BarEntry(1, 12.5f));
-        readingTimesEntries.add(new BarEntry(2, 19.8f));
-        readingTimesEntries.add(new BarEntry(3, 10.1f));
-        readingTimesEntries.add(new BarEntry(4, 18.4f));
-        readingTimesEntries.add(new BarEntry(5, 2.7f));
-        readingTimesEntries.add(new BarEntry(6, 18.9f));
+        // Observe LiveData from ViewModel
+        parentDashboardViewModel.getUserName().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String userName) {
+                tvUserName.setText(userName);
+            }
+        });
 
-        BarDataSet barDataSet = new BarDataSet(readingTimesEntries, "Reading Time");
-        barDataSet.setColor(Color.BLUE);
+        parentDashboardViewModel.getUserAge().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String userAge) {
+                tvUserAge.setText(userAge);
+            }
+        });
 
-        BarData barData = new BarData(barDataSet);
+        parentDashboardViewModel.getReadingTimesEntries().observe(getViewLifecycleOwner(), new Observer<List<BarEntry>>() {
+            @Override
+            public void onChanged(List<BarEntry> readingTimesEntries) {
+                BarDataSet barDataSet = new BarDataSet(readingTimesEntries, "Reading Time");
+                barDataSet.setColor(Color.BLUE);
 
-        barChart.setDescription(null);
-        barChart.setDrawGridBackground(false);
-        barChart.setMaxVisibleValueCount(7);
+                BarData barData = new BarData(barDataSet);
+                barChart.setData(barData);
+                barChart.setDescription(null);
+                barChart.setDrawGridBackground(false);
+                barChart.setMaxVisibleValueCount(7);
 
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(new String[] {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}));
+                XAxis xAxis = barChart.getXAxis();
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(new String[] {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}));
 
-        YAxis leftAxis = barChart.getAxisLeft();
-        leftAxis.setAxisMinimum(0f);
+                YAxis leftAxis = barChart.getAxisLeft();
+                leftAxis.setAxisMinimum(0f);
 
-        barChart.setData(barData);
-        barChart.invalidate();
+                barChart.invalidate();  // Refresh chart
+            }
+        });
 
+        // Close button action
         closeButton.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
             navController.navigate(R.id.navigation_settings);
