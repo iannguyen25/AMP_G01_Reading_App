@@ -17,4 +17,7 @@
     <string name="log_out">Đăng xuất</string>
     <string name="category">Thể loại</string>
     <string name="library">Thư viện</string>
+    <string name="error_invalid_input">Giá trị không hợp lệ</string>
+    <string name="error_save_failed">Lỗi khi lưu giới hạn thời gian</string>
+    <string name="success_save">Đã lưu giới hạn thời gian</string>
 </resources>

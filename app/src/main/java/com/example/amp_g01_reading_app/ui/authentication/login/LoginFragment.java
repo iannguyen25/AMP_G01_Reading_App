@@ -131,7 +131,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void checkChildAccount(String parentId) {
-        db.collection("children")
+        db.collection("users")
                 .whereEqualTo("parentId", parentId)
                 .limit(1)
                 .get()

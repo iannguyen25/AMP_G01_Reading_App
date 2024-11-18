@@ -1,5 +1,7 @@
 package com.example.amp_g01_reading_app.ui.authentication.createChildAccount;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,13 +84,26 @@ public class ChildAccountFragment extends Fragment {
         Map<String, Object> childData = new HashMap<>();
         childData.put("name", childName);
         childData.put("age", childAge);
-        childData.put("parentId", parentId);
+        childData.put("timeLimit", 60); // Default time limit
 
-        db.collection("children")
+        db.collection("users")
+                .document(parentId)
+                .collection("children")
                 .add(childData)
                 .addOnSuccessListener(documentReference -> {
+                    String childId = documentReference.getId(); // Lấy ID của tài liệu
+                    mViewModel.setChildId(childId);
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("childId", childId);
+                    editor.apply();
+// Cập nhật ViewModel
                     Toast.makeText(getContext(), "Tạo tài khoản trẻ thành công", Toast.LENGTH_SHORT).show();
-                    navigateToHome();
+
+                    // Cập nhật ID vào Firestore nếu cần thiết
+                    documentReference.update("id", childId)
+                            .addOnSuccessListener(aVoid -> navigateToHome())
+                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Lỗi cập nhật ID: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();

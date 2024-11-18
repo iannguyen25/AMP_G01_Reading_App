@@ -18,6 +18,7 @@
 
     <!-- Thêm tài khoản cho con -->
     <LinearLayout
+        android:id="@+id/add_child_account_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
