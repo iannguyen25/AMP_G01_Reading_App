@@ -53,8 +53,7 @@ public class SelectChildDialogFragment extends DialogFragment {
 
         loadChildren(adapter);
 
-        builder.setView(view)
-                .setTitle("Select Child");
+        builder.setView(view);
 
         return builder.create();
     }

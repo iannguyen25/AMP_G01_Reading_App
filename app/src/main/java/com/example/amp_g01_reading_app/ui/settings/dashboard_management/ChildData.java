@@ -1,20 +1,22 @@
 package com.example.amp_g01_reading_app.ui.settings.dashboard_management;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChildData {
-    private String ChildId;
+    private String childId;
     private String name;
     private int age;
     private int totalUsageToday;
     private int timeLimit;
-    private List<Integer> dailyUsage;
+    private Map<String, Long> dailyUsage;
 
     public String getId() {
-        return ChildId;
+        return childId;
     }
 
     public void setId(String id) {
-        this.ChildId = id;
+        this.childId = id;
     }
 
     public String getName() {
@@ -49,11 +51,11 @@ public class ChildData {
         this.timeLimit = timeLimit;
     }
 
-    public List<Integer> dailyUsage() {
-        return dailyUsage;
+    public Map<String, Long> dailyUsage() {
+        return dailyUsage != null ? dailyUsage : new HashMap<>();
     }
 
-    public void setDailyUsage(List<Integer> dailyUsage) {
-        this.dailyUsage = dailyUsage;
+    public Map<String, Long> getDailyUsage() {
+        return dailyUsage != null ? dailyUsage : new HashMap<>();
     }
 }

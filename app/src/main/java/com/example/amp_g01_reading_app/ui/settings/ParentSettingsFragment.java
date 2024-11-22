@@ -19,6 +19,7 @@ import com.example.amp_g01_reading_app.ui.authentication.ChildAccount.CreateChil
 import com.example.amp_g01_reading_app.ui.authentication.ChildAccount.SelectChildDialogFragment;
 import com.example.amp_g01_reading_app.ui.settings.dashboard_management.ParentDashboardActivity;
 import com.example.amp_g01_reading_app.ui.settings.management_settings.AdjustTimeLimitDialogFragment;
+import com.example.amp_g01_reading_app.ui.settings.management_settings.AgeLimitFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -45,12 +46,14 @@ public class ParentSettingsFragment extends Fragment {
         LinearLayout adjustTimeLimitButton = view.findViewById(R.id.adjustTimeLimitButton);
         LinearLayout parentDashboardButton = view.findViewById(R.id.parentDashboardButton);
         LinearLayout addNewChildAccount = view.findViewById(R.id.add_child_account_label);
+        LinearLayout adjustAgeLimitButton = view.findViewById(R.id.age_limit_fragment);
         TextView changeAccountButton = view.findViewById(R.id.AccountChange);
 
         logoutButton.setOnClickListener(v -> logout());
         adjustTimeLimitButton.setOnClickListener(v -> showAdjustTimeLimitDialog());
         parentDashboardButton.setOnClickListener(v -> openParentDashboard());
         changeAccountButton.setOnClickListener(v -> showChangeDialog());
+        adjustAgeLimitButton.setOnClickListener(v -> showAdjustAgeLimitDialog());
         addNewChildAccount.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), CreateChildAccountActivity.class);
             startActivity(intent);
@@ -66,6 +69,28 @@ public class ParentSettingsFragment extends Fragment {
 
     private void logout() {
         ((MainActivity) requireActivity()).logoutUser();
+    }
+
+    private void showAdjustAgeLimitDialog () {
+
+//        String parentId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+//        db.collection("children")
+//                .whereEqualTo("parentId", parentId)
+//                .get()
+//                .addOnSuccessListener(queryDocumentSnapshots -> {
+//                    if (queryDocumentSnapshots.size() == 1) {
+//                        // Only one child, show Adjust Time Limit Fragment directly
+//                        String childId = queryDocumentSnapshots.getDocuments().get(0).getId();
+//                        AdjustTimeLimitDialogFragment dialogFragment = AdjustTimeLimitDialogFragment.newInstance(childId);
+//                        dialogFragment.show(getChildFragmentManager(), "AdjustTimeLimit");
+//                    } else if (queryDocumentSnapshots.size() > 1) {
+//                        // Multiple children, show dialog to select child
+//                        SelectChildDialogFragment dialogFragment = new SelectChildDialogFragment();
+//                        dialogFragment.show(getChildFragmentManager(), "SelectChild");
+//                    }
+//                });
+        AgeLimitFragment dialogFragment = AgeLimitFragment.newInstance();
+        dialogFragment.show(getChildFragmentManager(), "AgeLimitFragment");
     }
 
     private void showAdjustTimeLimitDialog() {

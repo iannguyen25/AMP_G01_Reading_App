@@ -152,9 +152,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateFirebaseUsageTime(long minutes) {
         if (isChildAccount && minutes > 0) {
+            String currentDate = java.time.LocalDate.now().toString();
+
             Map<String, Object> updates = new HashMap<>();
             updates.put("totalUsageToday", FieldValue.increment(minutes));
             updates.put("lastUpdateTime", Instant.now(clock).toEpochMilli());
+            updates.put("dailyUsage." + currentDate, FieldValue.increment(minutes));
 
             db.collection("children").document(userId)
                     .update(updates)

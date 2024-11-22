@@ -17,8 +17,10 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ChildDashboardAdapter extends RecyclerView.Adapter<ChildDashboardAdapter.ChildViewHolder> {
 
@@ -51,6 +53,7 @@ public class ChildDashboardAdapter extends RecyclerView.Adapter<ChildDashboardAd
     class ChildViewHolder extends RecyclerView.ViewHolder {
         TextView tvUserName, tvUserAge, tvTimeRemaining, timeAverage;
         BarChart barChart;
+        private BarData cachedBarData;
 
         ChildViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -61,17 +64,15 @@ public class ChildDashboardAdapter extends RecyclerView.Adapter<ChildDashboardAd
             barChart = itemView.findViewById(R.id.barChart);
         }
 
-        private BarData cachedBarData;
-
         void bind(ChildData child) {
             tvUserName.setText(child.getName());
             tvUserAge.setText(context.getString(R.string.age_format, child.getAge()));
             tvTimeRemaining.setText(context.getString(R.string.time_used_format,
                     child.getTotalUsageToday()));
 
-            List<Integer> dailyUsage = child.dailyUsage();
+            Map<String, Long> dailyUsage = child.getDailyUsage();
             if (dailyUsage != null && !dailyUsage.isEmpty()) {
-                int averageUsage = calculateAverageUsage(dailyUsage);
+                long averageUsage = calculateAverageUsage(dailyUsage);
                 timeAverage.setText(context.getString(R.string.average_time_format,
                         averageUsage));
                 setupBarChart(dailyUsage);
@@ -81,48 +82,70 @@ public class ChildDashboardAdapter extends RecyclerView.Adapter<ChildDashboardAd
             }
         }
 
-        private int calculateAverageUsage(List<Integer>  dailyUsage) {
+        private long calculateAverageUsage(Map<String, Long> dailyUsage) {
             if (dailyUsage == null || dailyUsage.isEmpty()) {
                 return 0;
             }
-            int sum = 0;
-            for (int usage : dailyUsage) {
+            long sum = 0;
+            for (Long usage : dailyUsage.values()) {
                 sum += usage;
             }
             return sum / dailyUsage.size();
         }
 
-        private void setupBarChart(List<Integer> dailyUsage) {
-            if (cachedBarData == null) {
-                ArrayList<BarEntry> entries = new ArrayList<>();
-                for (int i = 0; i < dailyUsage.size(); i++) {
-                    entries.add(new BarEntry(i, dailyUsage.get(i)));
+        private void setupBarChart(Map<String, Long> dailyUsage) {
+            ArrayList<BarEntry> entries = new ArrayList<>();
+            ArrayList<String> labels = new ArrayList<>();
+
+            // Get the last 7 days of data
+            LocalDate today = LocalDate.now();
+            for (int i = 6; i >= 0; i--) {
+                LocalDate date = today.minusDays(i);
+                String dateStr = date.toString();
+                Long usage = dailyUsage.getOrDefault(dateStr, 0L);
+                entries.add(new BarEntry(6-i, usage));
+
+                // Get day of week in Vietnamese
+                String dayOfWeek;
+                switch (date.getDayOfWeek()) {
+                    case MONDAY: dayOfWeek = "T2"; break;
+                    case TUESDAY: dayOfWeek = "T3"; break;
+                    case WEDNESDAY: dayOfWeek = "T4"; break;
+                    case THURSDAY: dayOfWeek = "T5"; break;
+                    case FRIDAY: dayOfWeek = "T6"; break;
+                    case SATURDAY: dayOfWeek = "T7"; break;
+                    case SUNDAY: dayOfWeek = "CN"; break;
+                    default: dayOfWeek = "";
                 }
-
-                BarDataSet dataSet = new BarDataSet(entries,
-                        "Thời gian đọc (phút)");
-                dataSet.setColor(context.getResources().getColor(
-                        R.color.primary_color));
-
-                cachedBarData = new BarData(dataSet);
+                labels.add(dayOfWeek);
             }
 
-            barChart.setData(cachedBarData);
+            BarDataSet dataSet = new BarDataSet(entries, "Thời gian đọc (phút)");
+            dataSet.setColor(context.getResources().getColor(R.color.primary_color));
 
-            // Enable chart interactions
+            BarData barData = new BarData(dataSet);
+            barChart.setData(barData);
+
+            // Customize chart appearance
             barChart.setScaleEnabled(true);
             barChart.setPinchZoom(true);
             barChart.setDoubleTapToZoomEnabled(true);
 
-            String[] days = new String[]{"T2", "T3", "T4", "T5", "T6", "T7", "CN"};
             XAxis xAxis = barChart.getXAxis();
-            xAxis.setValueFormatter(new IndexAxisValueFormatter(days));
+            xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setGranularity(1f);
             xAxis.setGranularityEnabled(true);
 
+            // Add Y-axis formatting if needed
+            barChart.getAxisLeft().setGranularity(1f);
+            barChart.getAxisRight().setEnabled(false);
+
             barChart.getDescription().setEnabled(false);
             barChart.getLegend().setEnabled(false);
+
+            // Animate chart
+            barChart.animateY(1000);
             barChart.invalidate();
         }
     }
