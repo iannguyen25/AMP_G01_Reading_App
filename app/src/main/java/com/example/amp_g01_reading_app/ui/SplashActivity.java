@@ -1,31 +1,28 @@
 package com.example.amp_g01_reading_app.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.amp_g01_reading_app.R;
 import com.example.amp_g01_reading_app.ui.authentication.AccountSelectionActivity;
 import com.example.amp_g01_reading_app.ui.authentication.login.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
+@SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
     private static final int SPLASH_TIMEOUT = 3000; // 3 seconds
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         new Handler().postDelayed(this::checkLoginStatus, SPLASH_TIMEOUT);
     }

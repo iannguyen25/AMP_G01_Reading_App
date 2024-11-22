@@ -63,7 +63,7 @@ public class CreateChildAccountActivity extends AppCompatActivity {
         child.put("parentId", parentId);
         child.put("name", name);
         child.put("age", age);
-        child.put("timeLimit", 120); // Default time limit: 120 minutes
+        child.put("timeLimit", 120);
         child.put("dailyUsage", new HashMap<String, Integer>());
 
         db.collection("children").document(childId)

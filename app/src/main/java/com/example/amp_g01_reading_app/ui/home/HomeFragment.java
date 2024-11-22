@@ -1,8 +1,8 @@
 package com.example.amp_g01_reading_app.ui.home;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.view.LayoutInflater;
@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -66,15 +67,16 @@ public class HomeFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            requireActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.orange_statusbar));
-        }
+        requireActivity().getWindow().setStatusBarColor(
+                ContextCompat.getColor(requireContext(), R.color.orange_statusbar)
+        );
+
 
         setupRecyclerViews();
         observeViewModel(homeViewModel);
@@ -128,13 +130,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void observeViewModel(HomeViewModel viewModel) {
-        viewModel.getPopularBooks().observe(getViewLifecycleOwner(), books -> {
-            popularBooksAdapter.submitList(books);
-        });
+        viewModel.getPopularBooks().observe(getViewLifecycleOwner(), books -> popularBooksAdapter.submitList(books));
 
-        viewModel.getNewBooks().observe(getViewLifecycleOwner(), books -> {
-            newBooksAdapter.submitList(books);
-        });
+        viewModel.getNewBooks().observe(getViewLifecycleOwner(), books -> newBooksAdapter.submitList(books));
     }
 
     private void setupClickListeners() {
@@ -146,9 +144,7 @@ public class HomeFragment extends Fragment {
             // Handle view all new books click
         });
 
-        binding.voiceSearchButton.setOnClickListener(v -> {
-            startSpeechRecognization();
-        });
+        binding.voiceSearchButton.setOnClickListener(v -> startSpeechRecognization());
 
 
     }
@@ -159,6 +155,7 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
+    @SuppressLint("SetTextI18n")
     private void loadUserData() {
         String userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 

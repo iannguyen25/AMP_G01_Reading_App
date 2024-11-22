@@ -38,7 +38,8 @@ public class ConfirmDialogFragment extends DialogFragment {
         try {
             listener = (ConfirmDialogListener) getParentFragment();
         } catch (ClassCastException e) {
-            throw new ClassCastException(getParentFragment().toString()
+            assert getParentFragment() != null;
+            throw new ClassCastException(getParentFragment()
                     + " must implement ConfirmDialogListener");
         }
     }

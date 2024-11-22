@@ -1,6 +1,5 @@
 package com.example.amp_g01_reading_app.ui.settings.dashboard_management;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ChildData {

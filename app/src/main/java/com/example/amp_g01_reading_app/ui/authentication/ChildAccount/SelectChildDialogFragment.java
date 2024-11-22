@@ -41,7 +41,7 @@ public class SelectChildDialogFragment extends DialogFragment {
         childIds = new ArrayList<>();
 
         ListView childListView = view.findViewById(R.id.childListView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, childNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_list_item_1, childNames);
         childListView.setAdapter(adapter);
 
         childListView.setOnItemClickListener((parent, view1, position, id) -> {

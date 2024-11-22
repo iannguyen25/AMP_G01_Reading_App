@@ -1,20 +1,18 @@
 package com.example.amp_g01_reading_app.ui.settings.dashboard_management;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.amp_g01_reading_app.R;
-import com.github.mikephil.charting.charts.BarChart;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,21 +22,15 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ParentDashboardActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private TextView appBarLabel;
-    private ImageView iconBack;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private List<ChildData> childrenData;
     private ChildDashboardAdapter adapter;
     private TabLayout  tabLayout;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private View loadingView;
-    private View emptyView;
-    private View errorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +51,8 @@ public class ParentDashboardActivity extends AppCompatActivity {
     private void initViews() {
         viewPager = findViewById(R.id.viewPager);
         appBarLabel = findViewById(R.id.app_bar_label);
-        iconBack = findViewById(R.id.icon_back);
+        ImageView iconBack = findViewById(R.id.icon_back);
         tabLayout = findViewById(R.id.tab_layout);
-//        loadingView = findViewById(R.id.loading_view);
-//        emptyView = findViewById(R.id.empty_view);
-//        errorView = findViewById(R.id.error_view);
-//        swipeRefreshLayout = findViewById(R.id.swipe_refresh);
 
         iconBack.setOnClickListener(v -> finish());
 
@@ -75,16 +63,11 @@ public class ParentDashboardActivity extends AppCompatActivity {
         viewPager.setPageTransformer(new MarginPageTransformer(50));
     }
 
-//    private void setupSwipeRefresh() {
-//        swipeRefreshLayout.setOnRefreshListener(this::loadChildrenData);
-//    }
-
     private void loadChildrenData() {
         showLoading();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
-            showError(getString(R.string.error_not_logged_in));
             return;
         }
 
@@ -101,9 +84,7 @@ public class ParentDashboardActivity extends AppCompatActivity {
                         updateUI();
                     } else {
                         Log.e("ParentDashboardActivity", "Error getting documents: ", task.getException());
-                        showError(getString(R.string.error_loading_data));
                     }
-//                    swipeRefreshLayout.setRefreshing(false);
                 });
     }
 
@@ -130,6 +111,7 @@ public class ParentDashboardActivity extends AppCompatActivity {
                 });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void updateUI() {
         if (childrenData.isEmpty()) {
             showEmpty();
@@ -158,39 +140,20 @@ public class ParentDashboardActivity extends AppCompatActivity {
     }
 
     private void showLoading() {
-//        loadingView.setVisibility(View.VISIBLE);
-//        emptyView.setVisibility(View.GONE);
-//        errorView.setVisibility(View.GONE);
         viewPager.setVisibility(View.GONE);
     }
 
     private void showEmpty() {
-//        loadingView.setVisibility(View.GONE);
-//        emptyView.setVisibility(View.VISIBLE);
-//        errorView.setVisibility(View.GONE);
         viewPager.setVisibility(View.GONE);
-    }
-
-    private void showError(String message) {
-//        loadingView.setVisibility(View.GONE);
-//        emptyView.setVisibility(View.GONE);
-//        errorView.setVisibility(View.VISIBLE);
-        viewPager.setVisibility(View.GONE);
-//        ((TextView) errorView.findViewById(R.id.error_message)).setText(message);
     }
 
     private void setupViewPagerIndicator() {
-        // Customize TabLayout appearance
         tabLayout.setSelectedTabIndicatorHeight(0);
         tabLayout.setTabRippleColor(null);
-
-        // Calculate number of dots based on children data
-        int childCount = childrenData.size();
 
         // Create mediator
         TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(
                 tabLayout, viewPager, (tab, position) -> {
-            // Leave empty for dot indicators
         }
         );
         tabLayoutMediator.attach();
@@ -205,9 +168,6 @@ public class ParentDashboardActivity extends AppCompatActivity {
     }
 
     private void showContent() {
-//        loadingView.setVisibility(View.GONE);
-//        emptyView.setVisibility(View.GONE);
-//        errorView.setVisibility(View.GONE);
         viewPager.setVisibility(View.VISIBLE);
     }
 }

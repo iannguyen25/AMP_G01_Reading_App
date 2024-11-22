@@ -3,7 +3,6 @@ package com.example.amp_g01_reading_app.ui.home;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import com.example.amp_g01_reading_app.ui.home.Book;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -5,13 +5,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
-
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.amp_g01_reading_app.databinding.ItemBookBinding;
 
 public class BookAdapter extends ListAdapter<Book, BookAdapter.BookViewHolder> {
 
-    protected BookAdapter() {
+    public BookAdapter() {
         super(new DiffUtil.ItemCallback<Book>() {
             @Override
             public boolean areItemsTheSame(@NonNull Book oldItem, @NonNull Book newItem) {
@@ -38,15 +37,15 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.BookViewHolder> {
         holder.bind(getItem(position));
     }
 
-    static class BookViewHolder extends RecyclerView.ViewHolder {
+    public static class BookViewHolder extends RecyclerView.ViewHolder {
         private final ItemBookBinding binding;
 
-        BookViewHolder(ItemBookBinding binding) {
+        public BookViewHolder(ItemBookBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
 
-        void bind(Book book) {
+        public void bind(Book book) {
             binding.bookTitle.setText(book.getTitle());
             binding.bookPages.setText(book.getPages());
             binding.bookCover.setImageResource(book.getCoverResourceId());

@@ -21,7 +21,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -76,7 +75,7 @@ public class AccountSelectionActivity extends AppCompatActivity {
                         : today.minusDays(1);
 
                 if (timeLimit == null || totalUsageToday == null) {
-                    proceedToMainActivity(userId, false);
+                    proceedToMainActivity(userId);
                     return;
                 }
 
@@ -87,7 +86,7 @@ public class AccountSelectionActivity extends AppCompatActivity {
                 }
 
                 if (totalUsageToday < timeLimit) {
-                    proceedToMainActivity(userId, false);
+                    proceedToMainActivity(userId);
                 } else {
                     Intent intent = getIntent();
                     String dialogTitle = intent.getStringExtra("dialog_title_time_out");
@@ -105,21 +104,13 @@ public class AccountSelectionActivity extends AppCompatActivity {
                 );
                 dialog.show(getSupportFragmentManager(), "NotificationDialog");
             }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(this, "Error checking time limit: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
+        }).addOnFailureListener(e -> Toast.makeText(this, "Error checking time limit: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    private void proceedToMainActivity(String accountId, boolean isParent) {
-        if (!isParent) {
-            updateLastLoginTime(accountId);
-        }
+    private void proceedToMainActivity(String accountId) {
+        updateLastLoginTime(accountId);
         Intent intent = new Intent(AccountSelectionActivity.this, MainActivity.class);
-        if (isParent) {
-            intent.putExtra("parentId", accountId);
-        } else {
-            intent.putExtra("childId", accountId);
-        }
+        intent.putExtra("childId", accountId);
         startActivity(intent);
         finish();
     }
@@ -129,9 +120,7 @@ public class AccountSelectionActivity extends AppCompatActivity {
         db.collection("children")
                 .document(childId)
                 .update("lastLoginTime", currentTime)
-                .addOnFailureListener(e -> {
-                    Toast.makeText(AccountSelectionActivity.this, "Error updating last login time: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(AccountSelectionActivity.this, "Error updating last login time: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void loadAccounts() {

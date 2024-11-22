@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private String userId;
     private boolean isChildAccount;
     private CountDownTimer countDownTimer;
-    private AtomicLong timeLeftInMillis = new AtomicLong(0);
+    private final AtomicLong timeLeftInMillis = new AtomicLong(0);
     private Clock clock;
     private long lastUpdateTimestamp;
     private long accumulatedUsageTime = 0;
