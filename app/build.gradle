@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.amp_g01_reading_app"
-        minSdk 24
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -45,6 +45,7 @@ dependencies {
     implementation libs.firebase.database
     implementation libs.firebase.auth
     implementation libs.firebase.firestore
+    implementation libs.activity
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

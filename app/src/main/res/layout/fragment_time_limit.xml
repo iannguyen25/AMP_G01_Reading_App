@@ -53,7 +53,7 @@
             android:textSize="16sp"/>
 
         <TextView
-            android:id="@+id/tvRemainingTime"
+            android:id="@+id/currentTimeLimitTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -83,7 +83,7 @@
                     android:orientation="horizontal">
 
                     <EditText
-                        android:id="@+id/etHours"
+                        android:id="@+id/hoursEditText"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
                         android:layout_weight="1"
@@ -97,7 +97,7 @@
                         android:textSize="16sp"/>
 
                     <EditText
-                        android:id="@+id/etMinutes"
+                        android:id="@+id/minutesEditText"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
                         android:layout_weight="1"
@@ -115,7 +115,7 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/btnReset"
+                    android:id="@+id/resetButton"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginBottom="12dp"
@@ -131,7 +131,7 @@
                 android:orientation="vertical">
 
                 <Button
-                    android:id="@+id/btnAdd"
+                    android:id="@+id/increaseButton"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@drawable/button_background"
@@ -140,7 +140,7 @@
                     android:textColor="#FFFFFF"/>
 
                 <Button
-                    android:id="@+id/btnSubtract"
+                    android:id="@+id/decreaseButton"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginBottom="12dp"
@@ -158,7 +158,7 @@
         </ProgressBar>
 
         <Button
-            android:id="@+id/btnComplete"
+            android:id="@+id/confirmButton"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/button_background"

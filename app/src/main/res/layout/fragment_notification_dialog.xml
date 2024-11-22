@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/notification_dialog_fragment"
-    android:background="#80000000">  <!-- Background mờ -->
+    android:background="@android:color/transparent">  <!-- Background mờ -->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="32dp">
             <TextView
                 android:id="@+id/notification_title"
                 android:layout_width="0dp"
@@ -43,7 +43,7 @@
             android:textColor="@color/black"
             android:gravity="center"
             android:text="Nội dung thông báo"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="32dp"/>
 
         <!-- Buttons -->
         <LinearLayout

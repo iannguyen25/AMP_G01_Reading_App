@@ -1,236 +1,231 @@
 package com.example.amp_g01_reading_app;
 
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.View;
-
-import com.example.amp_g01_reading_app.databinding.ActivityMainBinding;
-import com.example.amp_g01_reading_app.services.TimeLimitService;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.amp_g01_reading_app.databinding.ActivityMainBinding;
+import com.example.amp_g01_reading_app.ui.authentication.AccountSelectionActivity;
+import com.example.amp_g01_reading_app.ui.authentication.login.LoginActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private ActivityMainBinding binding;
-    private TimeLimitService timeLimitService;
-    private boolean bound = false;
-    private BroadcastReceiver logoutReceiver;
-    private boolean receiverRegistered = false;
-    private BroadcastReceiver serviceReadyReceiver;
+    private static final long UPDATE_INTERVAL = 60000; // 1 minute in milliseconds
 
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            Log.d(TAG, "Service connected");
-            TimeLimitService.LocalBinder binder = (TimeLimitService.LocalBinder) service;
-            timeLimitService = binder.getService();
-            bound = true;
-            timeLimitService.loadTimeLimit();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            Log.d(TAG, "Service disconnected");
-            bound = false;
-        }
-    };
+    private TextView timerTextView;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private String userId;
+    private boolean isChildAccount;
+    private CountDownTimer countDownTimer;
+    private AtomicLong timeLeftInMillis = new AtomicLong(0);
+    private Clock clock;
+    private long lastUpdateTimestamp;
+    private long accumulatedUsageTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate called");
 
         try {
-            Objects.requireNonNull(getSupportActionBar()).hide();
-            binding = ActivityMainBinding.inflate(getLayoutInflater());
+            initializeClock();
+            ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
 
-            initializeLogoutReceiver();
-            initializeServiceReadyReceiver();
-
-            FirebaseAuth mAuth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-
-            setupNavigation(currentUser);
+            setupNavigation(binding);
+            initializeFirebase();
+            setupViews();
+            loadUserData();
 
         } catch (Exception e) {
             Log.e(TAG, "Error in onCreate", e);
+            Toast.makeText(this, "An error occurred. Please try again.", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
 
-    private void initializeLogoutReceiver() {
-        logoutReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "onReceive called");
-                if (intent.getAction() != null && intent.getAction().equals(TimeLimitService.ACTION_LOGOUT)) {
-                    Log.d(TAG, "Logout broadcast received");
-                    logout();
-                }
-            }
-        };
+    private void initializeClock() {
+        clock = Clock.system(ZoneId.systemDefault());
+        lastUpdateTimestamp = Instant.now(clock).toEpochMilli();
     }
 
-    private void initializeServiceReadyReceiver() {
-        try {
-            serviceReadyReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (TimeLimitService.TIME_LIMIT_SERVICE_READY.equals(intent.getAction())) {
-                        Log.d(TAG, "Service ready broadcast received");
-                        registerLogoutReceiver();
-                        try {
-                            unregisterReceiver(this);
-                        } catch (IllegalArgumentException e) {
-                            Log.e(TAG, "Error unregistering serviceReadyReceiver", e);
-                        }
+    private void setupNavigation(ActivityMainBinding binding) {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        NavigationUI.setupWithNavController(binding.navView, navController);
+    }
+
+    private void initializeFirebase() {
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+        isChildAccount = getIntent().hasExtra("childId");
+        if (isChildAccount) {
+            userId = getIntent().getStringExtra("childId");
+        }
+    }
+
+    private void setupViews() {
+        timerTextView = findViewById(R.id.timerTextView);
+    }
+
+    private void loadUserData() {
+        DocumentReference userRef = isChildAccount ?
+                db.collection("children").document(userId) :
+                db.collection("parents").document(userId);
+
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists() && isChildAccount) {
+                Long timeLimit = documentSnapshot.getLong("timeLimit");
+                Long totalUsageToday = documentSnapshot.getLong("totalUsageToday");
+
+                if (timeLimit != null && timeLimit > 0) {
+                    long remainingTime = (timeLimit - (totalUsageToday != null ? totalUsageToday : 0)) * 60 * 1000;
+                    if (remainingTime > 0) {
+                        timeLeftInMillis.set(remainingTime);
+                        startTimer();
                     } else {
-                        Log.d(TAG, "Unknown broadcast received");
+                        handleTimeOut();
                     }
+                } else {
+                    handleTimeOut();
                 }
-            };
-
-            IntentFilter filter = new IntentFilter("TIME_LIMIT_SERVICE_READY");
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                registerReceiver(serviceReadyReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-            } else {
-                registerReceiver(serviceReadyReceiver, filter);
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Error initializing serviceReadyReceiver", e);
-        }
+        }).addOnFailureListener(e -> Log.e(TAG, "Error loading user data", e));
     }
 
-
-
-    private void setupNavigation(FirebaseUser currentUser) {
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_category, R.id.navigation_notifications, R.id.navigation_settings)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
-
-        if (currentUser == null) {
-            Log.d(TAG, "User not logged in, navigating to login fragment");
-            navController.navigate(R.id.nav_loginFragment);
-        } else {
-            Log.d(TAG, "User logged in, starting TimeLimitService");
-            startAndBindTimeLimitService();
+    private synchronized void startTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
         }
 
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.navigation_dashboard || destination.getId() == R.id.nav_loginFragment || destination.getId() == R.id.nav_signUpFragment || destination.getId() == R.id.nav_childAccountFragment) {
-                navView.setVisibility(View.GONE);
-            } else {
-                navView.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    private void startAndBindTimeLimitService() {
-        Log.d(TAG, "Starting and binding TimeLimitService");
-        Intent intent = new Intent(this, TimeLimitService.class);
-        startService(intent);
-        bindService(intent, connection, Context.BIND_AUTO_CREATE);
-    }
-
-    private void registerLogoutReceiver() {
-        if (!receiverRegistered && logoutReceiver != null) {
-            Log.d(TAG, "Registering logout receiver");
-
-            IntentFilter filter = new IntentFilter(TimeLimitService.ACTION_LOGOUT);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                registerReceiver(logoutReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-            } else {
-                registerReceiver(logoutReceiver, filter);
+        countDownTimer = new CountDownTimer(timeLeftInMillis.get(), 1000) {
+            public void onTick(long millisUntilFinished) {
+                timeLeftInMillis.set(millisUntilFinished);
+                updateTimerText();
+                checkAndUpdateUsageTime();
             }
 
-            receiverRegistered = true;
-        } else {
-            Log.d(TAG, "Receiver already registered or logoutReceiver is null");
-        }
-    }
-
-
-
-    private void unregisterLogoutReceiver() {
-        if (receiverRegistered && logoutReceiver != null) {
-            try {
-                Log.d(TAG, "Unregistering logout receiver");
-                unregisterReceiver(logoutReceiver);
-                receiverRegistered = false;
-            } catch (IllegalArgumentException e) {
-                Log.e(TAG, "Error unregistering logout receiver", e);
+            public void onFinish() {
+                timeLeftInMillis.set(0);
+                updateTimerText();
+                checkAndUpdateUsageTime();
+                syncFinalUsageTime();
+                handleTimeOut();
             }
-        } else {
-            Log.d(TAG, "Logout receiver not registered or already null");
+        }.start();
+    }
+
+    private void checkAndUpdateUsageTime() {
+        long currentTime = Instant.now(clock).toEpochMilli();
+        long timeDifference = currentTime - lastUpdateTimestamp;
+
+        if (timeDifference >= UPDATE_INTERVAL) {
+            accumulatedUsageTime += UPDATE_INTERVAL / 1000 / 60; // Convert to minutes
+            updateFirebaseUsageTime(accumulatedUsageTime);
+            lastUpdateTimestamp = currentTime;
+            accumulatedUsageTime = 0;
         }
     }
 
-    private void logout() {
-        Log.d(TAG, "Logging out");
-        FirebaseAuth.getInstance().signOut();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        navController.navigate(R.id.nav_loginFragment);
-        cleanupServiceAndReceiver();
+    private void updateFirebaseUsageTime(long minutes) {
+        if (isChildAccount && minutes > 0) {
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("totalUsageToday", FieldValue.increment(minutes));
+            updates.put("lastUpdateTime", Instant.now(clock).toEpochMilli());
+
+            db.collection("children").document(userId)
+                    .update(updates)
+                    .addOnFailureListener(e -> Log.e(TAG, "Error updating usage time", e));
+        }
     }
 
-    private void cleanupServiceAndReceiver() {
-        Log.d(TAG, "Cleaning up service and receiver");
-        unregisterLogoutReceiver();
-        if (bound) {
-            unbindService(connection);
-            bound = false;
+    private void syncFinalUsageTime() {
+        if (accumulatedUsageTime > 0) {
+            updateFirebaseUsageTime(accumulatedUsageTime);
+            accumulatedUsageTime = 0;
         }
-        Intent intent = new Intent(this, TimeLimitService.class);
-        stopService(intent);
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void updateTimerText() {
+        int minutes = (int) (timeLeftInMillis.get() / 1000) / 60;
+        int seconds = (int) (timeLeftInMillis.get() / 1000) % 60;
+        @SuppressLint("DefaultLocale")
+        String timeLeftFormatted = String.format("%02d:%02d", minutes, seconds);
+        timerTextView.setText("Time left: " + timeLeftFormatted);
+    }
+
+    private void handleTimeOut() {
+        Intent intent = new Intent(MainActivity.this, AccountSelectionActivity.class);
+        intent.putExtra("dialog_title_time_out", "Thông báo");
+        intent.putExtra("dialog_message_time_out", "Hôm nay đã hết thời gian sử dụng. Hãy vào lại vào ngày mai nhé");
+        startActivity(intent);
+        finish();
+    }
+
+    public void logoutUser() {
+        syncFinalUsageTime();
+        mAuth.signOut();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("isLoggedIn");
+        editor.apply();
+
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("dialog_title", "Thông báo");
+        intent.putExtra("dialog_message", "Bạn đã đăng xuất thành công");
+        startActivity(intent);
+        finish();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume called");
-        if (bound && !receiverRegistered) {
-            registerLogoutReceiver();
+        if (isChildAccount) {
+            loadUserData(); // Reload data to ensure accuracy
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause called");
-        unregisterLogoutReceiver();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        syncFinalUsageTime();
     }
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy called");
         super.onDestroy();
-        try {
-            unregisterReceiver(serviceReadyReceiver);
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Error unregistering serviceReadyReceiver", e);
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
         }
-        cleanupServiceAndReceiver();
+        syncFinalUsageTime();
     }
 }

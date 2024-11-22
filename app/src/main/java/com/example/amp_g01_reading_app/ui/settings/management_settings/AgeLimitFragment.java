@@ -1,4 +1,4 @@
-package com.example.amp_g01_reading_app.ui.settings;
+package com.example.amp_g01_reading_app.ui.settings.management_settings;
 
 import android.os.Bundle;
 
@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 

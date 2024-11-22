@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AMP_G01_Reading_App</string>
+    <string name="app_name">AMP_G01</string>
     <string name="title_home">Trang chủ</string>
     <string name="settings">Cài đặt</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -20,4 +20,16 @@
     <string name="error_invalid_input">Giá trị không hợp lệ</string>
     <string name="error_save_failed">Lỗi khi lưu giới hạn thời gian</string>
     <string name="success_save">Đã lưu giới hạn thời gian</string>
+    <string name="create_child_account">Tạo tài khoản con của bạn</string>
+    <string name="child_name">Tên con bạn</string>
+    <string name="child_age">Tuổi con bạn</string>
+    <string name="create_account">Tạo tài khoản\n</string>
+    <string name="back_to_login">Đã có tài khoản? Đăng nhập</string>
+    <string name="sign_up">Đăng kí</string>
+    <string name="re_enter_password">Nhập lại mật khẩu</string>
+    <string name="password">Nhập mật khẩu</string>
+    <string name="email">Nhập tài khoản email</string>
+    <string name="login">Đăng nhập</string>
+    <string name="app_logo">Logo app</string>
+    <string name="change_account">Chuyển tài khoản</string>
 </resources>
