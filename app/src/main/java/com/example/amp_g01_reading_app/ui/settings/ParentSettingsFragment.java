@@ -5,15 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.amp_g01_reading_app.MainActivity;
 import com.example.amp_g01_reading_app.R;
-import com.example.amp_g01_reading_app.ui.ConfirmDialogFragment;
 import com.example.amp_g01_reading_app.ui.authentication.AccountSelectionActivity;
 import com.example.amp_g01_reading_app.ui.authentication.ChildAccount.CreateChildAccountActivity;
 import com.example.amp_g01_reading_app.ui.authentication.ChildAccount.SelectChildDialogFragment;
@@ -29,19 +28,50 @@ public class ParentSettingsFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private boolean isChildAccount;
 
     public ParentSettingsFragment() {
         // Required empty public constructor
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+        // Kiểm tra xem có phải tài khoản trẻ em không
+        isChildAccount = requireActivity().getIntent().hasExtra("childId");
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        int layoutId = isChildAccount ? R.layout.fragment_child_settings : R.layout.fragment_settings;
+        View view = inflater.inflate(layoutId, container, false);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+        if (isChildAccount) {
+            initializeChildViews(view);
+        } else {
+            initializeParentViews(view);
+        }
+
+        return view;
+    }
+
+    private void showChangeDialog() {
+        Intent intent = new Intent(getActivity(), AccountSelectionActivity.class);
+        startActivity(intent);
+
+    }
+
+    private void initializeChildViews(View view) {
+        TextView changeAccountButton = view.findViewById(R.id.AccountChange);
+        changeAccountButton.setOnClickListener(v -> showChangeDialog());
+    }
+
+    private void initializeParentViews(View view) {
         TextView logoutButton = view.findViewById(R.id.logoutButton);
         LinearLayout adjustTimeLimitButton = view.findViewById(R.id.adjustTimeLimitButton);
         LinearLayout parentDashboardButton = view.findViewById(R.id.parentDashboardButton);
@@ -58,12 +88,6 @@ public class ParentSettingsFragment extends Fragment {
             Intent intent = new Intent(getActivity(), CreateChildAccountActivity.class);
             startActivity(intent);
         });
-        return view;
-    }
-
-    private void showChangeDialog() {
-        Intent intent = new Intent(getActivity(), AccountSelectionActivity.class);
-        startActivity(intent);
 
     }
 
