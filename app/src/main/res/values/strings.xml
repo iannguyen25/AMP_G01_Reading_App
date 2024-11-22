@@ -39,4 +39,8 @@
     <string name="no_data">Không có dữ liệu</string>
     <string name="error_not_logged_in">Chưa đăng nhập</string>
     <string name="error_loading_data">Đang tải dữ liệu</string>
+
+    <!--Home-->
+    <string name="description_button_add_libraries">Add libraries</string>
+    <string name="description_button_sliders">Open filters</string>
 </resources>
