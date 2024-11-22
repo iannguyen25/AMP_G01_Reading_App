@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.authentication.login.ParentAuthenticationActivity"
     android:orientation="vertical"
+    android:background="@color/xam"
     android:padding="16dp">
 
         <TextView
@@ -14,17 +15,19 @@
             android:layout_width="wrap_content"
             android:layout_marginTop="150dp"
             android:layout_height="wrap_content"
-            android:text="Enter your password to access the parent account"
+            android:textColor="@color/white"
+            android:text="Nhập mật khẩu để truy cập vào tài khoản"
             android:textSize="16sp"
             android:layout_gravity="center_horizontal" />
 
         <EditText
             android:id="@+id/parentPasswordInput"
+            android:autofillHints=""
             android:background="@drawable/edit_text_background"
             android:layout_marginTop="25dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
+            android:hint="@string/password"
             android:textColorHint="@color/xam"
             android:textColor="@color/black"
             android:inputType="textPassword"
@@ -36,7 +39,7 @@
             android:layout_width="match_parent"
             android:background="@drawable/button_background"
             android:layout_height="wrap_content"
-            android:text="Authenticate"
+            android:text="@string/login"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp" />
     </LinearLayout>

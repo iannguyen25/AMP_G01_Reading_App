@@ -4,39 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/parent_dashboard_fragment"
-    android:background="@color/white_2"
     android:orientation="vertical"
     android:padding="16dp">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:ignore="UseCompoundDrawables">
-
-        <ImageView
-            android:id="@+id/icon_back"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_close"
-            android:layout_gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-        </ImageView>
-
-        <TextView
-            android:id="@+id/app_bar_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:textSize="20sp"
-            android:text="Dashboard"
-            android:textColor="@color/black"
-            android:textStyle="bold">
-
-        </TextView>
-    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -44,9 +13,6 @@
         android:layout_marginHorizontal="36dp"
         android:layout_marginTop="32dp">
 
-        <!-- Ảnh đại diện -->
-
-        <!-- Container thông tin -->
         <LinearLayout
             android:id="@+id/container_information"
             android:layout_width="match_parent"
@@ -86,7 +52,6 @@
             android:background="@drawable/image_profile"
             android:contentDescription="Image Profile"
             android:src="@drawable/ic_person"
-
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -95,79 +60,74 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:paddingHorizontal="32dp"
-        android:layout_marginTop="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginTop="24dp"
+        android:paddingHorizontal="32dp">
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="Thời gian còn lại hôm nay:"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:text="Thời gian hôm nay đã online:"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_time_remaining"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:text="32"
+            android:text="32 p"
+            android:textColor="@color/primary_color"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="@color/primary_color">
-        </TextView>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:layout_marginTop="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="Trong 7 ngày gần nhất"
             android:textColor="@color/black"
-            android:textStyle="bold"
             android:textSize="26sp"
-            android:gravity="center">
-        </TextView>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/time_average"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:textColor="#FFFF8B20"
+            android:gravity="center"
             android:text="34 phút"
-            android:textStyle="bold"
+            android:textColor="#FFFF8B20"
             android:textSize="34sp"
-            android:gravity="center">
-        </TextView>
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="@color/black"
+            android:gravity="center"
             android:text="thời gian đọc trung bình"
-            android:textSize="18sp"
-            android:gravity="center">
-        </TextView>
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

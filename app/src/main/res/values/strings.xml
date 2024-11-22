@@ -32,4 +32,11 @@
     <string name="login">Đăng nhập</string>
     <string name="app_logo">Logo app</string>
     <string name="change_account">Chuyển tài khoản</string>
+    <string name="age_format">%d tuổi</string>
+    <string name="time_used_format">%d phút</string>
+    <string name="average_time_format">%d phút</string>
+    <string name="dashboard_for">Dashboard cho %s</string>
+    <string name="no_data">Không có dữ liệu</string>
+    <string name="error_not_logged_in">Chưa đăng nhập</string>
+    <string name="error_loading_data">Đang tải dữ liệu</string>
 </resources>
