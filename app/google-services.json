@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "416938799058",
+    "project_id": "amp-g01-reading-app",
+    "storage_bucket": "amp-g01-reading-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416938799058:android:12413523d7afbde281620b",
+        "android_client_info": {
+          "package_name": "com.example.amp_g01_reading_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMfEaXtE6vd0eut6Jb4IqlwsEAsHrqc4w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
