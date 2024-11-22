@@ -32,4 +32,8 @@
     <string name="login">Đăng nhập</string>
     <string name="app_logo">Logo app</string>
     <string name="change_account">Chuyển tài khoản</string>
+
+    <!--Home-->
+    <string name="description_button_add_libraries">Add libraries</string>
+    <string name="description_button_sliders">Open filters</string>
 </resources>
