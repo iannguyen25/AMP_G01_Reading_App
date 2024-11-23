@@ -1,63 +1,228 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#F2F3F7"
-    tools:ignore="ExtraText">
-
-    <!-- Phần tiêu đề -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:textColor="@color/black"
-        android:text="@string/Settings"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center_vertical"
-        android:drawablePadding="8dp"
-        app:drawableLeftCompat="@drawable/ic_home_black_24dp" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="325dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/background_settings" />
-
-
-    <!-- Fragment cho cài đặt cá nhân -->
-    <FrameLayout
-        android:id="@+id/personalSettingsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
-
-    <!-- Fragment cho cài đặt quản lý -->
-    <FrameLayout
-        android:id="@+id/managementSettingsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
+    android:fillViewport="true"
+    android:paddingBottom="56dp"> <!-- Quan trọng để kéo dài chiều cao con -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="8dp" >
+        android:id="@+id/settings_fragment">
 
+        <!-- Phần tiêu đề -->
         <TextView
-            android:background="@color/white"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="28dp"
+            android:padding="16dp"
             android:textColor="@color/black"
-            android:text="@string/log_out"
+            android:text="@string/Settings"
+            android:textSize="24sp"
+            android:textStyle="bold"
             android:gravity="center_vertical"
             android:drawablePadding="8dp"
             app:drawableLeftCompat="@drawable/ic_home_black_24dp" />
-    </LinearLayout>
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="325dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/background_settings" />
+
+        <!-- Fragment cho cài đặt cá nhân -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:padding="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/personal"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Thêm tài khoản cho con -->
+            <LinearLayout
+                android:id="@+id/add_child_account_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:gravity="center_vertical"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/th_m_t_i_kho_n"
+                    android:src="@drawable/ic_home_black_24dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/add_account" />
+            </LinearLayout>
+
+            <!-- Đổi mật khẩu -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:gravity="center_vertical"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/change_pass_des"
+                    android:src="@drawable/ic_home_black_24dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/black"
+                    android:text="@string/change_password" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Fragment cho cài đặt quản lý -->
+        <LinearLayout
+            android:id="@+id/managentSettings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/management_title"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Giới hạn thời gian -->
+            <LinearLayout
+                android:id="@+id/adjustTimeLimitButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/time_limit"
+                    android:src="@drawable/ic_timer" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/black"
+                    android:text="@string/time_limit" />
+            </LinearLayout>
+
+            <!-- Giới hạn độ tuổi -->
+            <LinearLayout
+                android:id="@+id/age_limit_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/age_limit"
+                    android:src="@drawable/ic_home_black_24dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/black"
+                    android:text="@string/age_limit" />
+            </LinearLayout>
+
+            <!-- Xem trang quản lý -->
+            <LinearLayout
+                android:id="@+id/parentDashboardButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/view_management_dashboard"
+                    android:src="@drawable/ic_home_black_24dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/black"
+                    android:text="@string/view_management_dashboard" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/AccountChange"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:text="@string/change_account"
+                android:gravity="center_vertical"
+                android:drawablePadding="8dp"
+                app:drawableLeftCompat="@drawable/ic_home_black_24dp" />
+
+            <TextView
+                android:id="@+id/logoutButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:text="@string/log_out"
+                android:gravity="center_vertical"
+                android:drawablePadding="8dp"
+                app:drawableLeftCompat="@drawable/ic_home_black_24dp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

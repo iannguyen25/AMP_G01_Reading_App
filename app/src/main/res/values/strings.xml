@@ -1,9 +1,7 @@
 <resources>
-    <string name="app_name">AMP_G01_Reading_App</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="settings">Settings</string>
+    <string name="app_name">AMP_G01</string>
+    <string name="title_home">Trang chủ</string>
+    <string name="settings">Cài đặt</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="th_m_t_i_kho_n">Thêm tài khoản</string>
@@ -17,4 +15,32 @@
     <string name="Settings">Cài đặt</string>
     <string name="personal">Cá nhân</string>
     <string name="log_out">Đăng xuất</string>
+    <string name="category">Thể loại</string>
+    <string name="library">Thư viện</string>
+    <string name="error_invalid_input">Giá trị không hợp lệ</string>
+    <string name="error_save_failed">Lỗi khi lưu giới hạn thời gian</string>
+    <string name="success_save">Đã lưu giới hạn thời gian</string>
+    <string name="create_child_account">Tạo tài khoản con của bạn</string>
+    <string name="child_name">Tên con bạn</string>
+    <string name="child_age">Tuổi con bạn</string>
+    <string name="create_account">Tạo tài khoản\n</string>
+    <string name="back_to_login">Đã có tài khoản? Đăng nhập</string>
+    <string name="sign_up">Đăng kí</string>
+    <string name="re_enter_password">Nhập lại mật khẩu</string>
+    <string name="password">Nhập mật khẩu</string>
+    <string name="email">Nhập tài khoản email</string>
+    <string name="login">Đăng nhập</string>
+    <string name="app_logo">Logo app</string>
+    <string name="change_account">Chuyển tài khoản</string>
+    <string name="age_format">%d tuổi</string>
+    <string name="time_used_format">%d phút</string>
+    <string name="average_time_format">%d phút</string>
+    <string name="dashboard_for">Dashboard cho %s</string>
+    <string name="no_data">Không có dữ liệu</string>
+    <string name="error_not_logged_in">Chưa đăng nhập</string>
+    <string name="error_loading_data">Đang tải dữ liệu</string>
+
+    <!--Home-->
+    <string name="description_button_add_libraries">Add libraries</string>
+    <string name="description_button_sliders">Open filters</string>
 </resources>
