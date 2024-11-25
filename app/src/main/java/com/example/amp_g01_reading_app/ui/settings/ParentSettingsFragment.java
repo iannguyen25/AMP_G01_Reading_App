@@ -2,6 +2,7 @@ package com.example.amp_g01_reading_app.ui.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,13 @@ import com.example.amp_g01_reading_app.ui.settings.dashboard_management.ParentDa
 import com.example.amp_g01_reading_app.ui.settings.management_settings.AdjustTimeLimitDialogFragment;
 import com.example.amp_g01_reading_app.ui.settings.management_settings.AgeLimitFragment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class ParentSettingsFragment extends Fragment {
@@ -77,6 +83,7 @@ public class ParentSettingsFragment extends Fragment {
         LinearLayout parentDashboardButton = view.findViewById(R.id.parentDashboardButton);
         LinearLayout addNewChildAccount = view.findViewById(R.id.add_child_account_label);
         LinearLayout adjustAgeLimitButton = view.findViewById(R.id.age_limit_fragment);
+        LinearLayout changePasswordButton = view.findViewById(R.id.changePassword);
         TextView changeAccountButton = view.findViewById(R.id.AccountChange);
 
         logoutButton.setOnClickListener(v -> logout());
@@ -84,10 +91,67 @@ public class ParentSettingsFragment extends Fragment {
         parentDashboardButton.setOnClickListener(v -> openParentDashboard());
         changeAccountButton.setOnClickListener(v -> showChangeDialog());
         adjustAgeLimitButton.setOnClickListener(v -> showAdjustAgeLimitDialog());
+        changePasswordButton.setOnClickListener(v -> showChangePasswordDialog());
         addNewChildAccount.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), CreateChildAccountActivity.class);
             startActivity(intent);
         });
+
+    }
+
+    // New
+    private void showChangePasswordDialog() {
+        List<Map<String, Object>> sampleBooks = new ArrayList<>();
+
+        sampleBooks.add(new HashMap<String, Object>() {{
+            put("title", "Chú Bé Tí Hon");
+            put("author_id", "author1");
+            put("description", "Câu chuyện về một cậu bé nhỏ xíu");
+            put("minAge", 6);
+            put("maxAge", 8);
+            put("cover_image", "https://example.com/ti_hon.jpg");
+        }});
+
+        sampleBooks.add(new HashMap<String, Object>() {{
+            put("title", "Bí Mật Vườn Sau Nhà");
+            put("author_id", "author2");
+            put("description", "Khám phá khu vườn kỳ diệu");
+            put("minAge", 9);
+            put("maxAge", 11);
+            put("cover_image", "https://example.com/vuon_sau_nha.jpg");
+        }});
+
+        sampleBooks.add(new HashMap<String, Object>() {{
+            put("title", "Cuộc Phiêu Lưu Của Robot R5");
+            put("author_id", "author3");
+            put("description", "Hành trình của một robot thông minh");
+            put("minAge", 12);
+            put("maxAge", 14);
+            put("cover_image", "https://example.com/robot_r5.jpg");
+        }});
+
+        sampleBooks.add(new HashMap<String, Object>() {{
+            put("title", "Bí Ẩn Đảo Hoang");
+            put("author_id", "author4");
+            put("description", "Khám phá bí mật trên một hòn đảo xa xôi");
+            put("minAge", 15);
+            put("maxAge", 17);
+            put("cover_image", "https://example.com/dao_hoang.jpg");
+        }});
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference booksRef = db.collection("book");
+
+        for (Map<String, Object> book : sampleBooks) {
+            booksRef.add(book)
+                    .addOnSuccessListener(documentReference -> {
+                        Log.d("Firestore", "Book added with ID: " + documentReference.getId());
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Error adding book", e);
+                    });
+        }
+
 
     }
 

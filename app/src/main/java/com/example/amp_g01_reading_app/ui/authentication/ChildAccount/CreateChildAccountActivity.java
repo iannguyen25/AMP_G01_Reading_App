@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.amp_g01_reading_app.MainActivity;
 import com.example.amp_g01_reading_app.R;
+import com.example.amp_g01_reading_app.ui.NotificationDialogFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -43,7 +44,11 @@ public class CreateChildAccountActivity extends AppCompatActivity {
         String ageString = ageEditText.getText().toString().trim();
 
         if (name.isEmpty() || ageString.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            NotificationDialogFragment dialog = NotificationDialogFragment.newInstance(
+                    "Thông báo",
+                    "Hãy nhập tên và tuổi trước khi và màn hình chính!"
+            );
+            dialog.show(getSupportFragmentManager(), "NotificationDialog");
             return;
         }
 
@@ -55,6 +60,10 @@ public class CreateChildAccountActivity extends AppCompatActivity {
             return;
         }
 
+        int minAge = Math.max(6, age - 1);
+        int maxAge = Math.min(14, age + 1);
+        int[] ageGroup = {minAge, maxAge};
+
         String parentId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         String childId = db.collection("children").document().getId();
 
@@ -63,6 +72,7 @@ public class CreateChildAccountActivity extends AppCompatActivity {
         child.put("parentId", parentId);
         child.put("name", name);
         child.put("age", age);
+        child.put("selected_age_group", ageGroup);
         child.put("timeLimit", 120);
         child.put("dailyUsage", new HashMap<String, Integer>());
 
