@@ -2,6 +2,7 @@ package com.example.amp_g01_reading_app.ui.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,13 @@ import com.example.amp_g01_reading_app.ui.settings.dashboard_management.ParentDa
 import com.example.amp_g01_reading_app.ui.settings.management_settings.AdjustTimeLimitDialogFragment;
 import com.example.amp_g01_reading_app.ui.settings.management_settings.AgeLimitFragment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class ParentSettingsFragment extends Fragment {
@@ -77,6 +83,7 @@ public class ParentSettingsFragment extends Fragment {
         LinearLayout parentDashboardButton = view.findViewById(R.id.parentDashboardButton);
         LinearLayout addNewChildAccount = view.findViewById(R.id.add_child_account_label);
         LinearLayout adjustAgeLimitButton = view.findViewById(R.id.age_limit_fragment);
+        LinearLayout changePasswordButton = view.findViewById(R.id.changePassword);
         TextView changeAccountButton = view.findViewById(R.id.AccountChange);
 
         logoutButton.setOnClickListener(v -> logout());
@@ -84,6 +91,7 @@ public class ParentSettingsFragment extends Fragment {
         parentDashboardButton.setOnClickListener(v -> openParentDashboard());
         changeAccountButton.setOnClickListener(v -> showChangeDialog());
         adjustAgeLimitButton.setOnClickListener(v -> showAdjustAgeLimitDialog());
+        changePasswordButton.setOnClickListener(v -> showChangePasswordDialog());
         addNewChildAccount.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), CreateChildAccountActivity.class);
             startActivity(intent);
@@ -91,30 +99,12 @@ public class ParentSettingsFragment extends Fragment {
 
     }
 
-    private void logout() {
-        ((MainActivity) requireActivity()).logoutUser();
+    // New
+    private void showChangePasswordDialog() {
     }
 
-    private void showAdjustAgeLimitDialog () {
-
-//        String parentId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-//        db.collection("children")
-//                .whereEqualTo("parentId", parentId)
-//                .get()
-//                .addOnSuccessListener(queryDocumentSnapshots -> {
-//                    if (queryDocumentSnapshots.size() == 1) {
-//                        // Only one child, show Adjust Time Limit Fragment directly
-//                        String childId = queryDocumentSnapshots.getDocuments().get(0).getId();
-//                        AdjustTimeLimitDialogFragment dialogFragment = AdjustTimeLimitDialogFragment.newInstance(childId);
-//                        dialogFragment.show(getChildFragmentManager(), "AdjustTimeLimit");
-//                    } else if (queryDocumentSnapshots.size() > 1) {
-//                        // Multiple children, show dialog to select child
-//                        SelectChildDialogFragment dialogFragment = new SelectChildDialogFragment();
-//                        dialogFragment.show(getChildFragmentManager(), "SelectChild");
-//                    }
-//                });
-        AgeLimitFragment dialogFragment = AgeLimitFragment.newInstance();
-        dialogFragment.show(getChildFragmentManager(), "AgeLimitFragment");
+    private void logout() {
+        ((MainActivity) requireActivity()).logoutUser();
     }
 
     private void showAdjustTimeLimitDialog() {
@@ -126,11 +116,33 @@ public class ParentSettingsFragment extends Fragment {
                     if (queryDocumentSnapshots.size() == 1) {
                         // Only one child, show Adjust Time Limit Fragment directly
                         String childId = queryDocumentSnapshots.getDocuments().get(0).getId();
-                        AdjustTimeLimitDialogFragment dialogFragment = AdjustTimeLimitDialogFragment.newInstance(childId);
+                        AdjustTimeLimitDialogFragment dialogFragment =
+                                AdjustTimeLimitDialogFragment.newInstance(childId);
                         dialogFragment.show(getChildFragmentManager(), "AdjustTimeLimit");
                     } else if (queryDocumentSnapshots.size() > 1) {
                         // Multiple children, show dialog to select child
-                        SelectChildDialogFragment dialogFragment = new SelectChildDialogFragment();
+                        SelectChildDialogFragment dialogFragment =
+                                SelectChildDialogFragment.newInstance(SelectChildDialogFragment.ACTION_TIME_LIMIT);
+                        dialogFragment.show(getChildFragmentManager(), "SelectChild");
+                    }
+                });
+    }
+
+    private void showAdjustAgeLimitDialog() {
+        String parentId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+        db.collection("children")
+                .whereEqualTo("parentId", parentId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.size() == 1) {
+                        // Only one child, show Adjust Age Limit Fragment directly
+                        String childId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                        AgeLimitFragment dialogFragment = AgeLimitFragment.newInstance(childId);
+                        dialogFragment.show(getChildFragmentManager(), "AdjustAgeLimit");
+                    } else if (queryDocumentSnapshots.size() > 1) {
+                        // Multiple children, show dialog to select child
+                        SelectChildDialogFragment dialogFragment =
+                                SelectChildDialogFragment.newInstance(SelectChildDialogFragment.ACTION_AGE_RANGE);
                         dialogFragment.show(getChildFragmentManager(), "SelectChild");
                     }
                 });

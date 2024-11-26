@@ -22,17 +22,17 @@ public class HomeViewModel extends ViewModel {
     private void loadInitialData() {
         // Populate with sample data
         List<Book> popular = new ArrayList<>();
-        popular.add(new Book("Jungle Book", "4 Pages", R.drawable.jungle_book));
-        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
+//        popular.add(new Book("Jungle Book", "4 Pages", R.drawable.jungle_book));
+//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
+//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
+//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
+//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
+//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
         popularBooks.setValue(popular);
 
         List<Book> newBooksList = new ArrayList<>();
-        newBooksList.add(new Book("World Book", "3 Pages", R.drawable.jungle_book));
-        newBooksList.add(new Book("Help Book", "5 Pages", R.drawable.jungle_book));
+//        newBooksList.add(new Book("World Book", "3 Pages", R.drawable.jungle_book));
+//        newBooksList.add(new Book("Help Book", "5 Pages", R.drawable.jungle_book));
 
         newBooks.setValue(newBooksList);
     }

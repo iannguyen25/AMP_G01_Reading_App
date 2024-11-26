@@ -125,7 +125,7 @@ public class AccountSelectionActivity extends AppCompatActivity {
 
     private void loadAccounts() {
         String parentId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-        accountList.add("Parent Account"); // Add parent account
+        accountList.add("Parent Account"); // Thêm tài khoản Parent
         accountIds.add(parentId);
 
         db.collection("children")
@@ -142,8 +142,7 @@ public class AccountSelectionActivity extends AppCompatActivity {
                             }
                         }
                         if (!isFinishing() && !isDestroyed()) {
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                                    android.R.layout.simple_list_item_1, accountList);
+                            AccountAdapter adapter = new AccountAdapter(this, accountList, accountIds);
                             accountListView.setAdapter(adapter);
                         }
                     } else {
@@ -151,4 +150,5 @@ public class AccountSelectionActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }

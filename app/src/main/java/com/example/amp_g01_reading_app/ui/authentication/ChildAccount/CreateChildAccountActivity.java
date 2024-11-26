@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.amp_g01_reading_app.MainActivity;
 import com.example.amp_g01_reading_app.R;
+import com.example.amp_g01_reading_app.ui.NotificationDialogFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -22,6 +23,8 @@ public class CreateChildAccountActivity extends AppCompatActivity {
     private EditText nameEditText, ageEditText;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
+
+    private final String[] ageRanges = {"5-8", "9-12", "13-15"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,18 +41,40 @@ public class CreateChildAccountActivity extends AppCompatActivity {
         createAccountButton.setOnClickListener(v -> createChildAccount());
     }
 
+    private String getAgeGroup(int age) {
+        for (String range : ageRanges) {
+            String[] parts = range.split("-");
+            int minAge = Integer.parseInt(parts[0]);
+            int maxAge = Integer.parseInt(parts[1]);
+            if (age >= minAge && age <= maxAge) {
+                return range;
+            }
+        }
+        return null;
+    }
+
     private void createChildAccount() {
         String name = nameEditText.getText().toString().trim();
         String ageString = ageEditText.getText().toString().trim();
 
         if (name.isEmpty() || ageString.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            NotificationDialogFragment dialog = NotificationDialogFragment.newInstance(
+                    "Thông báo",
+                    "Hãy nhập tên và tuổi trước khi và màn hình chính!"
+            );
+            dialog.show(getSupportFragmentManager(), "NotificationDialog");
             return;
         }
 
         int age;
+        String selectedAgeGroup;
         try {
             age = Integer.parseInt(ageString);
+            selectedAgeGroup = getAgeGroup(age);
+            if (selectedAgeGroup == null || selectedAgeGroup.isEmpty()) {
+                Toast.makeText(this, "Nhóm tuổi không hợp lệ", Toast.LENGTH_SHORT).show();
+                return;
+            }
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Please enter a valid age", Toast.LENGTH_SHORT).show();
             return;
@@ -63,6 +88,7 @@ public class CreateChildAccountActivity extends AppCompatActivity {
         child.put("parentId", parentId);
         child.put("name", name);
         child.put("age", age);
+        child.put("selected_age_group", selectedAgeGroup);
         child.put("timeLimit", 120);
         child.put("dailyUsage", new HashMap<String, Integer>());
 

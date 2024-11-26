@@ -40,7 +40,15 @@
     <string name="error_not_logged_in">Chưa đăng nhập</string>
     <string name="error_loading_data">Đang tải dữ liệu</string>
 
+    <string-array name="age_ranges">
+        <item>6 – 8 tuổi</item>
+        <item>9 – 11 tuổi</item>
+        <item>12 – 14 tuổi</item>
+        <item>15 – 17 tuổi</item>
+    </string-array>
+
     <!--Home-->
     <string name="description_button_add_libraries">Add libraries</string>
     <string name="description_button_sliders">Open filters</string>
+    <string name="story_cover_description">Mô tả bìa truyện</string>
 </resources>

@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import com.example.amp_g01_reading_app.R;
 import com.example.amp_g01_reading_app.ui.settings.management_settings.AdjustTimeLimitDialogFragment;
+import com.example.amp_g01_reading_app.ui.settings.management_settings.AgeLimitFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -28,6 +29,28 @@ public class SelectChildDialogFragment extends DialogFragment {
     private List<String> childNames;
     private List<String> childIds;
 
+    private static final String ARG_ACTION_TYPE = "action_type";
+    public static final int ACTION_TIME_LIMIT = 1;
+    public static final int ACTION_AGE_RANGE = 2;
+
+    private int actionType;
+
+    public static SelectChildDialogFragment newInstance(int actionType) {
+        SelectChildDialogFragment fragment = new SelectChildDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_ACTION_TYPE, actionType);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            actionType = getArguments().getInt(ARG_ACTION_TYPE, ACTION_TIME_LIMIT);
+        }
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -41,13 +64,27 @@ public class SelectChildDialogFragment extends DialogFragment {
         childIds = new ArrayList<>();
 
         ListView childListView = view.findViewById(R.id.childListView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_list_item_1, childNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                requireActivity(),
+                R.layout.list_item_account,
+                R.id.accountName,
+                childNames
+        );
         childListView.setAdapter(adapter);
 
         childListView.setOnItemClickListener((parent, view1, position, id) -> {
             String selectedChildId = childIds.get(position);
-            AdjustTimeLimitDialogFragment dialogFragment = AdjustTimeLimitDialogFragment.newInstance(selectedChildId);
-            dialogFragment.show(getParentFragmentManager(), "AdjustTimeLimit");
+
+            if (actionType == ACTION_TIME_LIMIT) {
+                AdjustTimeLimitDialogFragment dialogFragment =
+                        AdjustTimeLimitDialogFragment.newInstance(selectedChildId);
+                dialogFragment.show(getParentFragmentManager(), "AdjustTimeLimit");
+            } else if (actionType == ACTION_AGE_RANGE) {
+                AgeLimitFragment dialogFragment =
+                        AgeLimitFragment.newInstance(selectedChildId);
+                dialogFragment.show(getParentFragmentManager(), "AdjustAgeLimit");
+            }
+
             dismiss();
         });
 

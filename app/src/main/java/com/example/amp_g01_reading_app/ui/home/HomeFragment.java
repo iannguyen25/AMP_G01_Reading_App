@@ -98,7 +98,6 @@ public class HomeFragment extends Fragment {
         loadUserData();
     }
 
-
     private void setupRecyclerViews() {
         // Setup Popular Books RecyclerView
         binding.popularBooksRecycler.setLayoutManager(
@@ -114,7 +113,6 @@ public class HomeFragment extends Fragment {
 
 
     }
-
 
     private void startSpeechRecognization(){
         Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -145,8 +143,6 @@ public class HomeFragment extends Fragment {
         });
 
         binding.voiceSearchButton.setOnClickListener(v -> startSpeechRecognization());
-
-
     }
 
     @Override
