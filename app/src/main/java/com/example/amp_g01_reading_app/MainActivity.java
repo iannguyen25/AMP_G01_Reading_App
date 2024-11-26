@@ -3,6 +3,7 @@ package com.example.amp_g01_reading_app;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.amp_g01_reading_app.databinding.ActivityMainBinding;
@@ -23,19 +25,21 @@ import com.example.amp_g01_reading_app.ui.settings.management_settings.StoriesAd
 import com.example.amp_g01_reading_app.ui.settings.management_settings.StoriesRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class MainActivity extends AppCompatActivity implements StoriesRepository.OnStoriesLoadedListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final long UPDATE_INTERVAL = 60000; // 1 minute in milliseconds
@@ -53,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements StoriesRepository
 
     private StoriesRepository storiesRepository;
     private RecyclerView recyclerView;
+    private List<String> ageRanges;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +73,13 @@ public class MainActivity extends AppCompatActivity implements StoriesRepository
             setupViews();
             loadUserData();
             //New
-            recyclerView = findViewById(R.id.recyclerViewStories);
-            storiesRepository = new StoriesRepository();
-//            loadStories();
+            ageRanges = new ArrayList<>();
+            ageRanges.add("5-8");
+            ageRanges.add("9-12");
+            ageRanges.add("13-15");
+            loadStories();
+
+            setupRecyclerView();
 
         } catch (Exception e) {
             Log.e(TAG, "Error in onCreate", e);
@@ -78,41 +87,74 @@ public class MainActivity extends AppCompatActivity implements StoriesRepository
             finish();
         }
     }
-//New
-//    private void loadStories() {
-//        FirebaseFirestore.getInstance().collection("users")
-//                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-//                .get()
-//                .addOnSuccessListener(documentSnapshot -> {
-//                    String ageLimit = documentSnapshot.getString("ageLimit");
-//                    if (ageLimit != null) {
-//                        int minAge = Integer.parseInt(ageLimit.split(" - ")[0]);
-//                        int maxAge = Integer.parseInt(ageLimit.split(" - ")[1].replace(" tuổi", ""));
-//                        // Gọi phương thức mới với minAge và maxAge
-//                        storiesRepository.getStoriesByAgeRange(minAge, maxAge, this);
-//                    } else {
-//                        // Xử lý nếu không có ageLimit
-//                        Toast.makeText(MainActivity.this, "Không tìm thấy giới hạn độ tuổi. Hiển thị tất cả truyện.", Toast.LENGTH_SHORT).show();
-//                        storiesRepository.getStoriesByAgeRange(0, 18, this); // Giới hạn độ tuổi mặc định
-//                    }
-//                })
-//                .addOnFailureListener(e -> {
-//                    Toast.makeText(MainActivity.this, "Lỗi khi tải dữ liệu người dùng", Toast.LENGTH_SHORT).show();
-//                });
-//    }
 
-    @Override
-    public void onStoriesLoaded(List<Book> stories) {
-        StoriesAdapter adapter = new StoriesAdapter(stories);
+    private void setupRecyclerView() {
+        recyclerView = findViewById(R.id.recyclerViewStories);
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        );
+    }
+
+    private void loadStories() {
+        getSelectedAgeGroupFromFirestore(ageGroup -> {
+            db.collection("book")
+                    .whereEqualTo("age_range", ageGroup)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        List<Book> storyList = queryDocumentSnapshots.toObjects(Book.class);
+                        Log.d("StoriesDebug", "Story list size: " + storyList.size());
+                        updateRecyclerView(storyList);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Error fetching stories", e);
+                        Toast.makeText(this, "Không thể tải danh sách truyện", Toast.LENGTH_SHORT).show();
+                    });
+        });
+    }
+
+
+    private void getSelectedAgeGroupFromFirestore(OnAgeGroupFetchedListener listener) {
+        if (!isChildAccount) {
+            Log.e(TAG, "Selected age group is only available for child accounts");
+            listener.onFetched("5-8"); // Giá trị mặc định nếu không phải tài khoản trẻ
+            return;
+        }
+
+        db.collection("children")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String selectedAgeGroup = documentSnapshot.getString("selected_age_group");
+                        if (selectedAgeGroup != null) {
+                            listener.onFetched(selectedAgeGroup);
+                        } else {
+                            Log.e(TAG, "selected_age_group field is missing");
+                            listener.onFetched("5-8"); // Giá trị mặc định
+                        }
+                    } else {
+                        Log.e(TAG, "Child document not found");
+                        listener.onFetched("5-8"); // Giá trị mặc định
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching selected age group", e);
+                    listener.onFetched("5-8"); // Giá trị mặc định khi lỗi
+                });
+    }
+
+    // Interface callback để xử lý dữ liệu không đồng bộ
+    interface OnAgeGroupFetchedListener {
+        void onFetched(String ageGroup);
+    }
+
+
+    private void updateRecyclerView(List<Book> storyList) {
+        StoriesAdapter adapter = new StoriesAdapter(storyList);
         recyclerView.setAdapter(adapter);
     }
 
-    @Override
-    public void onError(Exception e ){
-        // Handle error, e.g., show a Toast message
-        Toast.makeText(this, "Error loading stories: " + e, Toast.LENGTH_SHORT).show();
-    }
-// End New
+
     private void initializeClock() {
         clock = Clock.system(ZoneId.systemDefault());
         lastUpdateTimestamp = Instant.now(clock).toEpochMilli();
@@ -184,31 +226,17 @@ public class MainActivity extends AppCompatActivity implements StoriesRepository
         }.start();
     }
 
-//    private void checkAndUpdateUsageTime() {
-//        long currentTime = Instant.now(clock).toEpochMilli();
-//        long timeDifference = currentTime - lastUpdateTimestamp;
-//
-//        if (timeDifference >= UPDATE_INTERVAL) {
-//            accumulatedUsageTime += UPDATE_INTERVAL / 1000 / 60; // Convert to minutes
-//            updateFirebaseUsageTime(accumulatedUsageTime);
-//            lastUpdateTimestamp = currentTime;
-//            accumulatedUsageTime = 0;
-//        }
-//    }
-
     private void checkAndUpdateUsageTime() {
         long currentTime = Instant.now(clock).toEpochMilli();
         long timeDifference = currentTime - lastUpdateTimestamp;
 
-        // Chỉ cập nhật nếu thời gian chênh lệch lớn hơn một ngưỡng nhỏ (ví dụ: 10 giây)
-        if (timeDifference >= 10000) {
-            accumulatedUsageTime += timeDifference / 1000 / 60; // Convert to minutes
+        if (timeDifference >= UPDATE_INTERVAL) {
+            accumulatedUsageTime += UPDATE_INTERVAL / 1000 / 60; // Convert to minutes
             updateFirebaseUsageTime(accumulatedUsageTime);
             lastUpdateTimestamp = currentTime;
             accumulatedUsageTime = 0;
         }
     }
-
 
     private void updateFirebaseUsageTime(long minutes) {
         if (isChildAccount && minutes > 0) {

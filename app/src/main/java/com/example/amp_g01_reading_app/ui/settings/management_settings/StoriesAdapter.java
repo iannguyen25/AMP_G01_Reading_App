@@ -9,76 +9,83 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.amp_g01_reading_app.R;
 import com.example.amp_g01_reading_app.ui.home.Book;
 
 import java.util.List;
 
 public class StoriesAdapter extends RecyclerView.Adapter<StoriesAdapter.StoryViewHolder> {
-    private List<Book> stories;
-    private OnStoryClickListener listener;
+    private List<Book> storyList;
 
-    public StoriesAdapter(List<Book> stories) {
-        this.stories = stories;
+    public StoriesAdapter(List<Book> storyList) {
+        this.storyList = storyList;
     }
 
     @NonNull
     @Override
     public StoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_story, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_story, parent, false);
         return new StoryViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull StoryViewHolder holder, int position) {
-        Book story = stories.get(position);
-        holder.bind(story);
+        Book book = storyList.get(position);
+
+        // Set title
+        holder.textViewTitle.setText(book.getTitle());
+
+        // Set author (handle potential null)
+        if (book.getAuthor_id() != null) {
+            holder.textViewAuthor.setText(book.getAuthor_id());
+        } else {
+            holder.textViewAuthor.setText("Unknown Author");
+        }
+
+        if (book.getCover_image() != null) {
+            Glide.with(holder.imageViewCover.getContext())
+                    .load(book.getCover_image())
+                    .placeholder(R.drawable.button_background) // Ảnh placeholder trong khi tải
+                    .error(R.drawable.ic_launcher_background) // Ảnh hiển thị nếu tải bị lỗi
+                    .into(holder.imageViewCover);
+        } else {
+            // Nếu không có link, sử dụng ảnh local
+            holder.imageViewCover.setImageResource(book.getCoverResourceId() != 0
+                    ? book.getCoverResourceId()
+                    : R.drawable.jungle_book);
+        }
+
+        // Set age range
+        if (book.getAge_range() != null) {
+            holder.textViewAgeRange.setText(book.getAge_range());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return stories.size();
+        return storyList != null ? storyList.size() : 0;
     }
 
-    public void setStories(List<Book> stories) {
-        this.stories = stories;
-        notifyDataSetChanged();
-    }
+    static class StoryViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageViewCover;
+        TextView textViewTitle;
+        TextView textViewAuthor;
+        TextView textViewAgeRange;
 
-    public void setOnStoryClickListener(OnStoryClickListener listener) {
-        this.listener = listener;
-    }
-
-    class StoryViewHolder extends RecyclerView.ViewHolder {
-        private TextView titleTextView;
-        private TextView authorTextView;
-        private ImageView coverImageView;
-
-        StoryViewHolder(@NonNull View itemView) {
+        public StoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(R.id.textViewTitle);
-            authorTextView = itemView.findViewById(R.id.textViewAuthor);
-            coverImageView = itemView.findViewById(R.id.imageViewCover);
-
-            itemView.setOnClickListener(v -> {
-                int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION && listener != null) {
-                    listener.onStoryClick(stories.get(position));
-                }
-            });
-        }
-
-        void bind(Book story) {
-            titleTextView.setText(story.getTitle());
-            authorTextView.setText(story.getAuthor_id());
-            // Sử dụng thư viện tải ảnh như Glide hoặc Picasso để tải ảnh bìa
-            // Ví dụ với Glide:
-            // Glide.with(itemView.getContext()).load(story.getCoverUrl()).into(coverImageView);
+            imageViewCover = itemView.findViewById(R.id.imageViewCover);
+            textViewTitle = itemView.findViewById(R.id.textViewTitle);
+            textViewAuthor = itemView.findViewById(R.id.textViewAuthor);
+            textViewAgeRange = itemView.findViewById(R.id.textViewAgeRange);
         }
     }
 
-    public interface OnStoryClickListener {
-        void onStoryClick(Book story);
+    // Method to update the list
+    public void updateStories(List<Book> newStoryList) {
+        this.storyList = newStoryList;
+        notifyDataSetChanged();
     }
 }

@@ -24,6 +24,8 @@ public class CreateChildAccountActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
+    private final String[] ageRanges = {"5-8", "9-12", "13-15"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,18 @@ public class CreateChildAccountActivity extends AppCompatActivity {
         Button createAccountButton = findViewById(R.id.createAccountButton);
 
         createAccountButton.setOnClickListener(v -> createChildAccount());
+    }
+
+    private String getAgeGroup(int age) {
+        for (String range : ageRanges) {
+            String[] parts = range.split("-");
+            int minAge = Integer.parseInt(parts[0]);
+            int maxAge = Integer.parseInt(parts[1]);
+            if (age >= minAge && age <= maxAge) {
+                return range;
+            }
+        }
+        return null;
     }
 
     private void createChildAccount() {
@@ -53,16 +67,18 @@ public class CreateChildAccountActivity extends AppCompatActivity {
         }
 
         int age;
+        String selectedAgeGroup;
         try {
             age = Integer.parseInt(ageString);
+            selectedAgeGroup = getAgeGroup(age);
+            if (selectedAgeGroup == null || selectedAgeGroup.isEmpty()) {
+                Toast.makeText(this, "Nhóm tuổi không hợp lệ", Toast.LENGTH_SHORT).show();
+                return;
+            }
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Please enter a valid age", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        int minAge = Math.max(6, age - 1);
-        int maxAge = Math.min(14, age + 1);
-        int[] ageGroup = {minAge, maxAge};
 
         String parentId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         String childId = db.collection("children").document().getId();
@@ -72,7 +88,7 @@ public class CreateChildAccountActivity extends AppCompatActivity {
         child.put("parentId", parentId);
         child.put("name", name);
         child.put("age", age);
-        child.put("selected_age_group", ageGroup);
+        child.put("selected_age_group", selectedAgeGroup);
         child.put("timeLimit", 120);
         child.put("dailyUsage", new HashMap<String, Integer>());
 

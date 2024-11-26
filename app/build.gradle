@@ -57,4 +57,7 @@ dependencies {
     implementation libs.lifecycle.livedata
 
     implementation libs.mpandroidchart
+
+    implementation libs.glide
+    annotationProcessor libs.compiler
 }

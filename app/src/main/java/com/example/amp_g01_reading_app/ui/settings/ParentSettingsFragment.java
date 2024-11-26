@@ -101,84 +101,10 @@ public class ParentSettingsFragment extends Fragment {
 
     // New
     private void showChangePasswordDialog() {
-        List<Map<String, Object>> sampleBooks = new ArrayList<>();
-
-        sampleBooks.add(new HashMap<String, Object>() {{
-            put("title", "Chú Bé Tí Hon");
-            put("author_id", "author1");
-            put("description", "Câu chuyện về một cậu bé nhỏ xíu");
-            put("minAge", 6);
-            put("maxAge", 8);
-            put("cover_image", "https://example.com/ti_hon.jpg");
-        }});
-
-        sampleBooks.add(new HashMap<String, Object>() {{
-            put("title", "Bí Mật Vườn Sau Nhà");
-            put("author_id", "author2");
-            put("description", "Khám phá khu vườn kỳ diệu");
-            put("minAge", 9);
-            put("maxAge", 11);
-            put("cover_image", "https://example.com/vuon_sau_nha.jpg");
-        }});
-
-        sampleBooks.add(new HashMap<String, Object>() {{
-            put("title", "Cuộc Phiêu Lưu Của Robot R5");
-            put("author_id", "author3");
-            put("description", "Hành trình của một robot thông minh");
-            put("minAge", 12);
-            put("maxAge", 14);
-            put("cover_image", "https://example.com/robot_r5.jpg");
-        }});
-
-        sampleBooks.add(new HashMap<String, Object>() {{
-            put("title", "Bí Ẩn Đảo Hoang");
-            put("author_id", "author4");
-            put("description", "Khám phá bí mật trên một hòn đảo xa xôi");
-            put("minAge", 15);
-            put("maxAge", 17);
-            put("cover_image", "https://example.com/dao_hoang.jpg");
-        }});
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference booksRef = db.collection("book");
-
-        for (Map<String, Object> book : sampleBooks) {
-            booksRef.add(book)
-                    .addOnSuccessListener(documentReference -> {
-                        Log.d("Firestore", "Book added with ID: " + documentReference.getId());
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("Firestore", "Error adding book", e);
-                    });
-        }
-
-
     }
 
     private void logout() {
         ((MainActivity) requireActivity()).logoutUser();
-    }
-
-    private void showAdjustAgeLimitDialog () {
-
-//        String parentId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-//        db.collection("children")
-//                .whereEqualTo("parentId", parentId)
-//                .get()
-//                .addOnSuccessListener(queryDocumentSnapshots -> {
-//                    if (queryDocumentSnapshots.size() == 1) {
-//                        // Only one child, show Adjust Time Limit Fragment directly
-//                        String childId = queryDocumentSnapshots.getDocuments().get(0).getId();
-//                        AdjustTimeLimitDialogFragment dialogFragment = AdjustTimeLimitDialogFragment.newInstance(childId);
-//                        dialogFragment.show(getChildFragmentManager(), "AdjustTimeLimit");
-//                    } else if (queryDocumentSnapshots.size() > 1) {
-//                        // Multiple children, show dialog to select child
-//                        SelectChildDialogFragment dialogFragment = new SelectChildDialogFragment();
-//                        dialogFragment.show(getChildFragmentManager(), "SelectChild");
-//                    }
-//                });
-        AgeLimitFragment dialogFragment = AgeLimitFragment.newInstance();
-        dialogFragment.show(getChildFragmentManager(), "AgeLimitFragment");
     }
 
     private void showAdjustTimeLimitDialog() {
@@ -190,11 +116,33 @@ public class ParentSettingsFragment extends Fragment {
                     if (queryDocumentSnapshots.size() == 1) {
                         // Only one child, show Adjust Time Limit Fragment directly
                         String childId = queryDocumentSnapshots.getDocuments().get(0).getId();
-                        AdjustTimeLimitDialogFragment dialogFragment = AdjustTimeLimitDialogFragment.newInstance(childId);
+                        AdjustTimeLimitDialogFragment dialogFragment =
+                                AdjustTimeLimitDialogFragment.newInstance(childId);
                         dialogFragment.show(getChildFragmentManager(), "AdjustTimeLimit");
                     } else if (queryDocumentSnapshots.size() > 1) {
                         // Multiple children, show dialog to select child
-                        SelectChildDialogFragment dialogFragment = new SelectChildDialogFragment();
+                        SelectChildDialogFragment dialogFragment =
+                                SelectChildDialogFragment.newInstance(SelectChildDialogFragment.ACTION_TIME_LIMIT);
+                        dialogFragment.show(getChildFragmentManager(), "SelectChild");
+                    }
+                });
+    }
+
+    private void showAdjustAgeLimitDialog() {
+        String parentId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+        db.collection("children")
+                .whereEqualTo("parentId", parentId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.size() == 1) {
+                        // Only one child, show Adjust Age Limit Fragment directly
+                        String childId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                        AgeLimitFragment dialogFragment = AgeLimitFragment.newInstance(childId);
+                        dialogFragment.show(getChildFragmentManager(), "AdjustAgeLimit");
+                    } else if (queryDocumentSnapshots.size() > 1) {
+                        // Multiple children, show dialog to select child
+                        SelectChildDialogFragment dialogFragment =
+                                SelectChildDialogFragment.newInstance(SelectChildDialogFragment.ACTION_AGE_RANGE);
                         dialogFragment.show(getChildFragmentManager(), "SelectChild");
                     }
                 });

@@ -8,9 +8,9 @@ public class Book {
     private int coverResourceId;
     private String description;
     private String content;
-    private String author_id;
+    private String author;
     private String genre_id;
-    private String age_group;
+    private String age_range;
     private String cover_image;
     private DateTime published_date;
     private boolean is_published;
@@ -19,6 +19,10 @@ public class Book {
         this.title = title;
         this.pages = pages;
         this.coverResourceId = coverResourceId;
+    }
+
+    public Book() {
+        // Cần thiết để Firestore có thể khởi tạo đối tượng
     }
 
     public void setCoverResourceId(int coverResourceId) {
@@ -42,11 +46,11 @@ public class Book {
     }
 
     public String getAuthor_id() {
-        return author_id;
+        return author;
     }
 
-    public void setAuthor_id(String author_id) {
-        this.author_id = author_id;
+    public void setAuthor_id(String author) {
+        this.author = author;
     }
 
     public String getGenre_id() {
@@ -57,12 +61,12 @@ public class Book {
         this.genre_id = genre_id;
     }
 
-    public String getAge_group() {
-        return age_group;
+    public String getAge_range() {
+        return age_range;
     }
 
-    public void setAge_group(String age_group) {
-        this.age_group = age_group;
+    public void setAge_range(String age_range) {
+        this.age_range = age_range;
     }
 
     public DateTime getPublished_date() {
