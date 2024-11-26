@@ -236,7 +236,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
-                    android:text="Newly Added Books"
+                    android:text="Sách phù hợp cho bé"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -253,7 +253,7 @@
                 android:layout_width="match_parent"
                 android:background="@color/white"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" />
+                android:orientation="vertical" />
         </LinearLayout>
 
     </LinearLayout>

@@ -91,14 +91,13 @@ public class MainActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         recyclerView = findViewById(R.id.recyclerViewStories);
         recyclerView.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         );
     }
 
     private void loadStories() {
-        getSelectedAgeGroupFromFirestore(ageGroup -> {
+        if(!isChildAccount){
             db.collection("book")
-                    .whereEqualTo("age_range", ageGroup)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         List<Book> storyList = queryDocumentSnapshots.toObjects(Book.class);
@@ -109,7 +108,23 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("Firestore", "Error fetching stories", e);
                         Toast.makeText(this, "Không thể tải danh sách truyện", Toast.LENGTH_SHORT).show();
                     });
-        });
+        }
+        else {
+            getSelectedAgeGroupFromFirestore(ageGroup -> {
+                db.collection("book")
+                        .whereEqualTo("age_range", ageGroup)
+                        .get()
+                        .addOnSuccessListener(queryDocumentSnapshots -> {
+                            List<Book> storyList = queryDocumentSnapshots.toObjects(Book.class);
+                            Log.d("StoriesDebug", "Story list size: " + storyList.size());
+                            updateRecyclerView(storyList);
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e("Firestore", "Error fetching stories", e);
+                            Toast.makeText(this, "Không thể tải danh sách truyện", Toast.LENGTH_SHORT).show();
+                        });
+            });
+        }
     }
 
 
@@ -299,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if (isChildAccount) {
             loadUserData(); // Reload data to ensure accuracy
+            loadStories();
         }
     }
 
@@ -309,6 +325,7 @@ public class MainActivity extends AppCompatActivity {
             countDownTimer.cancel();
         }
         syncFinalUsageTime();
+        loadStories();
     }
 
     @Override
@@ -318,5 +335,6 @@ public class MainActivity extends AppCompatActivity {
             countDownTimer.cancel();
         }
         syncFinalUsageTime();
+        loadStories();
     }
 }

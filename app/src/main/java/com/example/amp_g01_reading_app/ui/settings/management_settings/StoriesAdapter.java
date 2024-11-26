@@ -44,6 +44,12 @@ public class StoriesAdapter extends RecyclerView.Adapter<StoriesAdapter.StoryVie
             holder.textViewAuthor.setText("Unknown Author");
         }
 
+        if (book.getAge_range() != null) {
+            holder.textViewAgeRange.setText(book.getAge_range());
+        } else {
+            holder.textViewAuthor.setText("Unknown Arange");
+        }
+
         if (book.getCover_image() != null) {
             Glide.with(holder.imageViewCover.getContext())
                     .load(book.getCover_image())
@@ -55,11 +61,6 @@ public class StoriesAdapter extends RecyclerView.Adapter<StoriesAdapter.StoryVie
             holder.imageViewCover.setImageResource(book.getCoverResourceId() != 0
                     ? book.getCoverResourceId()
                     : R.drawable.jungle_book);
-        }
-
-        // Set age range
-        if (book.getAge_range() != null) {
-            holder.textViewAgeRange.setText(book.getAge_range());
         }
     }
 

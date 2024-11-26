@@ -15,14 +15,15 @@ public class Book {
     private DateTime published_date;
     private boolean is_published;
 
-    public Book(String title, String pages, int coverResourceId) {
+    public Book(String title, String pages, int coverResourceId, String author, String age_range) {
         this.title = title;
         this.pages = pages;
         this.coverResourceId = coverResourceId;
+        this.author = author;
+        this.age_range = age_range;
     }
 
     public Book() {
-        // Cần thiết để Firestore có thể khởi tạo đối tượng
     }
 
     public void setCoverResourceId(int coverResourceId) {
