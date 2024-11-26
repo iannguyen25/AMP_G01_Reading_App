@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.amp_g01_reading_app.R;
 import com.example.amp_g01_reading_app.ui.bookscreen.BookScreenViewModel;
+import com.example.amp_g01_reading_app.ui.comments.CommentsActivity;
+
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -173,12 +175,12 @@ public class BookScreenActivity extends AppCompatActivity {
 
 
     private void showComments() {
-        // Xử lý hiển thị bình luận
-        Toast.makeText(this, "Hiển thị bình luận", Toast.LENGTH_SHORT).show();
-        // Ví dụ: Chuyển sang màn hình bình luận
-//        Intent intent = new Intent(this, CommentsActivity.class);
-//        startActivity(intent);
+        String storyId = "I0l5CXoUuPf4EiwO7Non"; // ID của truyện
+        Intent intent = new Intent(BookScreenActivity.this, CommentsActivity.class);
+        intent.putExtra("STORY_ID", storyId); // Truyền ID của truyện cho CommentsActivity
+        startActivity(intent);
     }
+
 
     private void showFavorites() {
         // Xử lý danh sách yêu thích
