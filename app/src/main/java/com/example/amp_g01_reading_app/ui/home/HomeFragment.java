@@ -5,9 +5,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +30,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -40,7 +44,11 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private BookAdapter popularBooksAdapter;
     private BookAdapter newBooksAdapter;
+   // private HomeViewModel homeViewModel;
+//    private List<Book> popularBooks = new ArrayList<>();
     private ActivityResultLauncher<Intent> speechRecognizerLauncher;
+
+    private LinearLayout newlyBooks;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -63,7 +71,46 @@ public class HomeFragment extends Fragment {
                     }
                 }
         );
+
+//        binding.searchEdit.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {}
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+//                String searchQuery = charSequence.toString().trim();
+//
+//
+//                if (!searchQuery.isEmpty()) {
+//                    searchBooks(searchQuery);
+//                } else {
+//                    // Nếu không có chữ hoặc chỉ có dấu cách
+//                   // showAllBooks();
+//                }
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {}
+//        });
     }
+
+    private void performSearch(String query) {
+
+
+        // Ẩn các phần tử không liên quan
+        newlyBooks.setVisibility(View.GONE);
+    }
+
+    private ArrayList<Book> filterBooks(ArrayList<Book> books, String query) {
+        ArrayList<Book> filteredBooks = new ArrayList<>();
+        for (Book book : books) {
+            if (book.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                filteredBooks.add(book);
+            }
+        }
+        return filteredBooks;
+    }
+
 
 
     @Override
@@ -94,6 +141,7 @@ public class HomeFragment extends Fragment {
 
         welcomeTextView = view.findViewById(R.id.welcomeTextView);
         timeLimitTextView = view.findViewById(R.id.timeLimitTextView);
+        newlyBooks = view.findViewById(R.id.newlyBooks);
 
         loadUserData();
     }
@@ -128,19 +176,37 @@ public class HomeFragment extends Fragment {
     }
 
     private void observeViewModel(HomeViewModel viewModel) {
-        viewModel.getPopularBooks().observe(getViewLifecycleOwner(), books -> popularBooksAdapter.submitList(books));
+        viewModel.getPopularBooks().observe(getViewLifecycleOwner(), books -> {
+            //popularBooks = books;
+            popularBooksAdapter.submitList(books);
+        });
 
         viewModel.getNewBooks().observe(getViewLifecycleOwner(), books -> newBooksAdapter.submitList(books));
     }
 
-    private void setupClickListeners() {
-        binding.viewAllPopular.setOnClickListener(v -> {
-            // Handle view all popular books click
-        });
+//    public void searchBooks(String textSearch) {
+//        List<Book> filteredBooks = new ArrayList<>();
+//
+//        // Lọc sách theo tiêu đề
+//        for (Book book : popularBooks) {
+//            if (book.getTitle().toLowerCase().contains(textSearch.toLowerCase())) {
+//                filteredBooks.add(book);
+//            }
+//        }
+//
+//        // Cập nhật danh sách sách sau khi tìm kiếm
+//        popularBooksAdapter.submitList(filteredBooks);
+//    }
 
-        binding.viewAllNew.setOnClickListener(v -> {
-            // Handle view all new books click
-        });
+    private void setupClickListeners() {
+//        binding.viewAllPopular.setOnClickListener(v -> {
+//            // Handle view all popular books click
+//            newlyBooks.setVisibility(View.INVISIBLE);
+//        });
+//
+//        binding.viewAllNew.setOnClickListener(v -> {
+//            // Handle view all new books click
+//        });
 
         binding.voiceSearchButton.setOnClickListener(v -> startSpeechRecognization());
     }
@@ -173,9 +239,16 @@ public class HomeFragment extends Fragment {
                         DocumentSnapshot childDoc = task.getResult().getDocuments().get(0);
                         String name = childDoc.getString("name");
                         Long timeLimit = childDoc.getLong("timeLimit");
+                        Integer age = Math.toIntExact(childDoc.getLong("age"));
                         welcomeTextView.setText("Welcome, " + name);
                         timeLimitTextView.setText("Time limit: " + timeLimit + " minutes");
                         timeLimitTextView.setVisibility(View.VISIBLE);
+
+
+                        if (age != null) {
+                            HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+                            homeViewModel.setUserAge(age);
+                        }
                     }
                 });
     }
