@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "706776221341",
-    "project_id": "androidamp1",
-    "storage_bucket": "androidamp1.firebasestorage.app"
+    "project_number": "416938799058",
+    "project_id": "amp-g01-reading-app",
+    "storage_bucket": "amp-g01-reading-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:706776221341:android:8cdb22dfbf8842640e3674",
+        "mobilesdk_app_id": "1:416938799058:android:12413523d7afbde281620b",
         "android_client_info": {
           "package_name": "com.example.amp_g01_reading_app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDFUu3KnwyJ1U-a_ekCvgwFkz2zYQqF4jo"
+          "current_key": "AIzaSyBMfEaXtE6vd0eut6Jb4IqlwsEAsHrqc4w"
         }
       ],
       "services": {
