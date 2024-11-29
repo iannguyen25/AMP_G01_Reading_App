@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
@@ -16,6 +17,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
         tools:targetApi="31">
+
+        <!-- Combine all activities -->
+        <activity
+            android:name=".ui.bookscreen.BookScreenActivity"
+            android:exported="false"
+            android:label="@string/app_name">
+        </activity>
+
         <activity
             android:name=".ui.authentication.login.ParentAuthenticationActivity"
             android:exported="false" />
@@ -38,11 +47,16 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.bookscreen.BookDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.comments.CommentsActivity"
+            android:exported="false"/>
+        <activity
             android:name=".ui.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

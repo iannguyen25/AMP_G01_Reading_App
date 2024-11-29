@@ -6,6 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.example.amp_g01_reading_app.R;
 import com.example.amp_g01_reading_app.databinding.ItemBookBinding;
 
 public class BookAdapter extends ListAdapter<Book, BookAdapter.BookViewHolder> {
@@ -49,6 +52,11 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.BookViewHolder> {
             binding.bookTitle.setText(book.getTitle());
             binding.bookPages.setText(book.getPages());
             binding.bookCover.setImageResource(book.getCoverResourceId());
+            Glide.with(binding.bookCover.getContext())
+                    .load(book.getCover_image())
+                    .placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.error_image)
+                    .into(binding.bookCover);
         }
     }
 }

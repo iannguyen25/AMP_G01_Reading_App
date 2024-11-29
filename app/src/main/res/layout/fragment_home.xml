@@ -85,13 +85,13 @@
                 <!-- Search bar -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/searchSection"
-                    android:layout_width="780px"
+                    android:layout_width="980px"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="2dp"
                     android:layout_margin="3dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@id/FilterButton"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -128,19 +128,19 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <ImageButton
-                    android:id="@+id/FilterButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginLeft="5dp"
-                    android:background="@drawable/circle_home"
-                    android:contentDescription="@string/description_button_sliders"
-                    android:src="@drawable/sliders_solid"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintLeft_toRightOf="@id/searchSection"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/FilterButton"-->
+<!--                    android:layout_width="48dp"-->
+<!--                    android:layout_height="48dp"-->
+<!--                    android:layout_marginLeft="5dp"-->
+<!--                    android:background="@drawable/circle_home"-->
+<!--                    android:contentDescription="@string/description_button_sliders"-->
+<!--                    android:src="@drawable/sliders_solid"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintLeft_toRightOf="@id/searchSection"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintVertical_bias="0.0" />-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -166,12 +166,12 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/viewAllPopular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="View all"
-                        android:textColor="@color/orange" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/viewAllPopular"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="View all"-->
+<!--                        android:textColor="@color/orange" />-->
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -183,6 +183,7 @@
 
             <!-- Newly Added Books Section -->
             <LinearLayout
+                android:id="@+id/newlyBooks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -201,12 +202,12 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/viewAllNew"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="View all"
-                        android:textColor="@color/orange" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/viewAllNew"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="View all"-->
+<!--                        android:textColor="@color/orange" />-->
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
