@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     //private static final String BASE_URL = " http://localhost:8001/api/";
-    private static final String BASE_URL = "https://2ac4-2402-800-61cf-18d1-4ccb-4bf9-d790-2b33.ngrok-free.app/api/"; // Địa chỉ của web service
+    private static final String BASE_URL = "https://6826-14-177-182-182.ngrok-free.app/api/"; // Địa chỉ của web service
     private static Retrofit retrofit;
 
     public static Retrofit getRetrofitInstance() {

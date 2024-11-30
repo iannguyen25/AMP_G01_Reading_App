@@ -1,6 +1,6 @@
 package com.example.amp_g01_reading_app.connect;
 
-import com.example.amp_g01_reading_app.ui.bookscreen.Book;
+import com.example.amp_g01_reading_app.ui.home.Book;
 import com.example.amp_g01_reading_app.ui.comments.Comment;
 
 import java.util.List;

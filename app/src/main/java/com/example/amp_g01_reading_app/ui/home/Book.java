@@ -1,5 +1,6 @@
 package com.example.amp_g01_reading_app.ui.home;
 
+import com.google.firebase.Timestamp;
 import com.google.type.DateTime;
 
 public class Book {
@@ -10,17 +11,17 @@ public class Book {
     private String content;
     private String author;
     private String genre_id;
-    private String age_range;
+    private String age_group;
     private String cover_image;
-    private DateTime published_date;
+    private PublishedDate published_date;
     private boolean is_published;
 
-    public Book(String title, String pages, int coverResourceId, String author, String age_range) {
+    public Book(String title, String pages, int coverResourceId, String author, String age_group) {
         this.title = title;
         this.pages = pages;
         this.coverResourceId = coverResourceId;
         this.author = author;
-        this.age_range = age_range;
+        this.age_group = age_group;
     }
 
     public Book() {
@@ -63,18 +64,18 @@ public class Book {
     }
 
     public String getAge_range() {
-        return age_range;
+        return age_group;
     }
 
-    public void setAge_range(String age_range) {
-        this.age_range = age_range;
+    public void setAge_range(String age_group) {
+        this.age_group = age_group;
     }
 
-    public DateTime getPublished_date() {
+    public PublishedDate getPublished_date() {
         return published_date;
     }
 
-    public void setPublished_date(DateTime published_date) {
+    public void setPublished_date(PublishedDate  published_date) {
         this.published_date = published_date;
     }
 
@@ -116,3 +117,5 @@ public class Book {
                 pages.equals(book.pages);
     }
 }
+
+

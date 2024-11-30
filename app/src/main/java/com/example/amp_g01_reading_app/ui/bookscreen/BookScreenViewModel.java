@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.amp_g01_reading_app.connect.ApiClient;
 import com.example.amp_g01_reading_app.connect.ApiService;
+import com.example.amp_g01_reading_app.ui.home.Book;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,4 +44,3 @@ public class BookScreenViewModel extends ViewModel {
         });
     }
 }
-
