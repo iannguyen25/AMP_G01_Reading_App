@@ -3,7 +3,6 @@ package com.example.amp_g01_reading_app;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -25,7 +24,6 @@ import com.example.amp_g01_reading_app.ui.settings.management_settings.StoriesAd
 import com.example.amp_g01_reading_app.ui.settings.management_settings.StoriesRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 

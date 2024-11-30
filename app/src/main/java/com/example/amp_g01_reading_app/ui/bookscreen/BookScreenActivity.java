@@ -1,8 +1,6 @@
 package com.example.amp_g01_reading_app.ui.bookscreen;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
@@ -19,7 +17,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.amp_g01_reading_app.R;
-import com.example.amp_g01_reading_app.ui.bookscreen.BookScreenViewModel;
 import com.example.amp_g01_reading_app.ui.comments.CommentsActivity;
 
 

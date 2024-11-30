@@ -3,7 +3,6 @@ package com.example.amp_g01_reading_app.ui.authentication;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 

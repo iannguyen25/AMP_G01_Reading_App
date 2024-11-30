@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.amp_g01_reading_app.R;
-
 
 public class HomeViewModel extends ViewModel {
     private final MutableLiveData<List<Book>> popularBooks;

@@ -13,9 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.amp_g01_reading_app.R;
 
-
-import java.util.List;
-
 public class CommentsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
