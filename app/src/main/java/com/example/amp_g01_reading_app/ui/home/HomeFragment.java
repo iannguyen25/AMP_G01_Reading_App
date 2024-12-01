@@ -239,16 +239,13 @@ public class HomeFragment extends Fragment {
                         DocumentSnapshot childDoc = task.getResult().getDocuments().get(0);
                         String name = childDoc.getString("name");
                         Long timeLimit = childDoc.getLong("timeLimit");
-                        Integer age = Math.toIntExact(childDoc.getLong("age"));
+                        int age = Math.toIntExact(childDoc.getLong("age"));
                         welcomeTextView.setText("Welcome, " + name);
                         timeLimitTextView.setText("Time limit: " + timeLimit + " minutes");
                         timeLimitTextView.setVisibility(View.VISIBLE);
 
-
-                        if (age != null) {
-                            HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-                            homeViewModel.setUserAge(age);
-                        }
+                        HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+                        homeViewModel.setUserAge(age);
                     }
                 });
     }
