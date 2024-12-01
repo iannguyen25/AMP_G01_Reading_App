@@ -1,17 +1,13 @@
 package com.example.amp_g01_reading_app.ui.category;
 
-import android.annotation.SuppressLint;
 import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.amp_g01_reading_app.connect.ApiClient;
 import com.example.amp_g01_reading_app.connect.ApiService;
-import com.example.amp_g01_reading_app.ui.home.Book;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -24,7 +20,7 @@ public class CategoryViewModel extends ViewModel {
 
     public CategoryViewModel() {
         api = ApiClient.getRetrofitInstance().create(ApiService.class);
-        loadInitialData(); // Gọi hàm tải dữ liệu từ API
+        loadInitialData();
     }
 
     private void loadInitialData() {
@@ -32,7 +28,7 @@ public class CategoryViewModel extends ViewModel {
             @Override
             public void onResponse(Call<List<Genre>> call, Response<List<Genre>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    genresLiveData.setValue(response.body()); // Cập nhật LiveData với danh sách genres
+                    genresLiveData.setValue(response.body());
                 }
             }
 
@@ -44,6 +40,6 @@ public class CategoryViewModel extends ViewModel {
     }
 
     public LiveData<List<Genre>> getGenres() {
-        return genresLiveData; // Trả về LiveData chứa danh sách thể loại
+        return genresLiveData;
     }
 }

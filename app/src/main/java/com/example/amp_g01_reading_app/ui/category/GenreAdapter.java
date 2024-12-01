@@ -17,9 +17,11 @@ import java.util.List;
 
 public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHolder> {
     private final List<Genre> genres;
+    private final OnGenreClickListener listener;
 
-    public GenreAdapter(List<Genre> genres) {
+    public GenreAdapter(List<Genre> genres, OnGenreClickListener listener) {
         this.genres = genres;
+        this.listener = listener;
     }
 
     @NonNull
@@ -38,6 +40,8 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
                 .load(genre.getImageUrl())
                 .placeholder(R.drawable.background_settings)
                 .into(holder.icon);
+
+        holder.itemView.setOnClickListener(v -> listener.onGenreClick(genre));
     }
 
     @Override
@@ -63,3 +67,4 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
     }
 
 }
+
