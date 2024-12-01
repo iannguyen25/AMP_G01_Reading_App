@@ -1,0 +1,31 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp">
+
+    <ImageView
+        android:id="@+id/genre_icon"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/background_settings" />
+
+    <TextView
+        android:id="@+id/genre_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="@id/genre_icon"
+        app:layout_constraintBottom_toBottomOf="@id/genre_icon"
+        android:layout_marginStart="15dp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        android:text="Truyền thuyết"
+        android:textColor="@color/white"
+        android:textSize="24sp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
