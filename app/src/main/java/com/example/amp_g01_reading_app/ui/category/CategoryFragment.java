@@ -11,26 +11,38 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.amp_g01_reading_app.R;
 import com.example.amp_g01_reading_app.databinding.FragmentCategoryBinding;
 
 import java.util.ArrayList;
 
 public class CategoryFragment extends Fragment {
-
     private FragmentCategoryBinding binding;
-    private GenreAdapter genreAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCategoryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Cài đặt RecyclerView
-        genreAdapter = new GenreAdapter(new ArrayList<>());
+        GenreAdapter genreAdapter = new GenreAdapter(new ArrayList<>(), genre -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("genre_id", genre.getId());
+
+            StoryListFragment storyListFragment = new StoryListFragment();
+            storyListFragment.setArguments(bundle);
+
+            binding.recyclerView.setVisibility(View.GONE);
+//            binding.categoryFragment.setVisibility(View.GONE);
+
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.category_fragment, storyListFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(genreAdapter);
 
-        // Quan sát dữ liệu từ ViewModel
         CategoryViewModel viewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         viewModel.getGenres().observe(getViewLifecycleOwner(), genres -> {
             if (genres != null) {
@@ -47,3 +59,4 @@ public class CategoryFragment extends Fragment {
         binding = null;
     }
 }
+
