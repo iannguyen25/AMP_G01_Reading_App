@@ -42,6 +42,7 @@
             android:textColor="#757575"/>
 
         <ImageButton
+            android:id="@+id/addToLibraryButton"
             android:layout_width="match_parent"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"

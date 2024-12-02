@@ -2,11 +2,13 @@ package com.example.amp_g01_reading_app.connect;
 
 import com.example.amp_g01_reading_app.ui.home.Book;
 import com.example.amp_g01_reading_app.ui.comments.Comment;
+import com.example.amp_g01_reading_app.ui.home.BookMark;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -27,4 +29,13 @@ public interface ApiService {
     @POST("comments")
     Call<Void> postComment(@Body Comment comment);
     //  thêm các endpoint khác tương ứng với web service
+
+    @GET("bookmarks/{userId}")
+    Call<List<BookMark>> getBookmarks(@Path("userId") String userId);
+
+    @POST("bookmarks")
+    Call<Void> addBookmark(@Body BookMark bookmark);
+
+    @DELETE("bookmarks/{id}")
+    Call<Void> deleteBookmark(@Path("id") String bookmarkId);
 }

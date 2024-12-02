@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.amp_g01_reading_app.R;
 import com.example.amp_g01_reading_app.databinding.FragmentHomeBinding;
+import com.example.amp_g01_reading_app.ui.bookscreen.BookScreenActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -44,11 +45,12 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private BookAdapter popularBooksAdapter;
     private BookAdapter newBooksAdapter;
-   // private HomeViewModel homeViewModel;
-//    private List<Book> popularBooks = new ArrayList<>();
+    private HomeViewModel homeViewModel;
+    //    private List<Book> popularBooks = new ArrayList<>();
     private ActivityResultLauncher<Intent> speechRecognizerLauncher;
 
     private LinearLayout newlyBooks;
+    private TextView popularBook;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -59,70 +61,26 @@ public class HomeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        speechRecognizerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null){
-                        ArrayList<String> speedResult = result.getData().getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                        if (speedResult !=null && !speedResult.isEmpty()){
-                            String spokenText = speedResult.get(0);
-                            binding.searchEdit.setText(spokenText);
-                        }
-                    }
+        speechRecognizerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                ArrayList<String> speedResult = result.getData().getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                if (speedResult != null && !speedResult.isEmpty()) {
+                    String spokenText = speedResult.get(0);
+                    binding.searchEdit.setText(spokenText);
                 }
-        );
-
-//        binding.searchEdit.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {}
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-//                String searchQuery = charSequence.toString().trim();
-//
-//
-//                if (!searchQuery.isEmpty()) {
-//                    searchBooks(searchQuery);
-//                } else {
-//                    // Nếu không có chữ hoặc chỉ có dấu cách
-//                   // showAllBooks();
-//                }
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {}
-//        });
-    }
-
-    private void performSearch(String query) {
-
-
-        // Ẩn các phần tử không liên quan
-        newlyBooks.setVisibility(View.GONE);
-    }
-
-    private ArrayList<Book> filterBooks(ArrayList<Book> books, String query) {
-        ArrayList<Book> filteredBooks = new ArrayList<>();
-        for (Book book : books) {
-            if (book.getTitle().toLowerCase().contains(query.toLowerCase())) {
-                filteredBooks.add(book);
             }
-        }
-        return filteredBooks;
-    }
+        });
 
+    }
 
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        requireActivity().getWindow().setStatusBarColor(
-                ContextCompat.getColor(requireContext(), R.color.orange_statusbar)
-        );
+        requireActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.orange_statusbar));
 
 
         setupRecyclerViews();
@@ -142,35 +100,103 @@ public class HomeFragment extends Fragment {
         welcomeTextView = view.findViewById(R.id.welcomeTextView);
         timeLimitTextView = view.findViewById(R.id.timeLimitTextView);
         newlyBooks = view.findViewById(R.id.newlyBooks);
+        popularBook = view.findViewById(R.id.popularBook);
+
+        binding.searchEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String searchText = s.toString().toLowerCase().trim();
+                if (!searchText.isEmpty()) {
+                    homeViewModel.searchBooks(searchText);
+                    newlyBooks.setVisibility(View.INVISIBLE);
+                    popularBook.setText("Results");
+                } else {
+                    newlyBooks.setVisibility(View.VISIBLE);
+                    popularBook.setText("Popular Books");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         loadUserData();
     }
 
     private void setupRecyclerViews() {
         // Setup Popular Books RecyclerView
-        binding.popularBooksRecycler.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        popularBooksAdapter = new BookAdapter();
+        binding.popularBooksRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        popularBooksAdapter = new BookAdapter(new BookAdapter.OnBookClickListener() {
+            @Override
+            public void onBookClick(int position) {
+                Book clickedBook = popularBooksAdapter.getCurrentList().get(position);
+                Intent intent = new Intent(getContext(), BookScreenActivity.class);
+                intent.putExtra("storyId", clickedBook.getId());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onAddToLibraryClick(int position) {
+                Book clickedBook = popularBooksAdapter.getCurrentList().get(position);
+                //Toast.makeText(getContext(), "Added " + clickedBook.getTitle() + " to library", Toast.LENGTH_SHORT).show();
+                hanndleBookmarkClick(clickedBook);
+            }
+        });
         binding.popularBooksRecycler.setAdapter(popularBooksAdapter);
 
         // Setup New Books RecyclerView
-        binding.newBooksRecycler.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        newBooksAdapter = new BookAdapter();
-        binding.newBooksRecycler.setAdapter(newBooksAdapter);
+        binding.newBooksRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        newBooksAdapter = new BookAdapter(new BookAdapter.OnBookClickListener() {
+            @Override
+            public void onBookClick(int position) {
+                Book clickedBook = newBooksAdapter.getCurrentList().get(position);
+                Intent intent = new Intent(getContext(), BookScreenActivity.class);
+                intent.putExtra("storyId", clickedBook.getId());
+                startActivity(intent);
+            }
 
+            @Override
+            public void onAddToLibraryClick(int position) {
+                Book clickedBook = newBooksAdapter.getCurrentList().get(position);
+                // Implement your logic for adding book to library
+                //Toast.makeText(getContext(), "Added " + clickedBook.getTitle() + " to library", Toast.LENGTH_SHORT).show();
+                hanndleBookmarkClick(clickedBook);
+            }
+        });
+        binding.newBooksRecycler.setAdapter(newBooksAdapter);
+    }
+
+    private void hanndleBookmarkClick(Book clickedBook) {
+        List<BookMark> bookmarks = homeViewModel.getBookMarks().getValue();
+        if (bookmarks != null) {
+            BookMark existingBookmark = bookmarks.stream().filter(b -> b.getStory_id().equals(clickedBook.getId())).findFirst().orElse(null);
+            if (existingBookmark != null) {
+                homeViewModel.deleteBookMark(existingBookmark.getId());
+            } else {
+                BookMark newBookmark = new BookMark();
+                newBookmark.setStory_id(clickedBook.getId());
+                newBookmark.setStatus("favorite");
+                homeViewModel.addBookMark(newBookmark);
+            }
+        }
 
     }
 
-    private void startSpeechRecognization(){
+
+    private void startSpeechRecognization() {
         Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
         speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speek to seach...");
 
-        try{
+        try {
             speechRecognizerLauncher.launch(speechIntent);
-        }catch (Exception e){
+        } catch (Exception e) {
             Toast.makeText(getContext(), "Thiết bị không hỗ trợ tìm kiếm giọng nói", Toast.LENGTH_LONG).show();
         }
     }
@@ -184,19 +210,6 @@ public class HomeFragment extends Fragment {
         viewModel.getNewBooks().observe(getViewLifecycleOwner(), books -> newBooksAdapter.submitList(books));
     }
 
-//    public void searchBooks(String textSearch) {
-//        List<Book> filteredBooks = new ArrayList<>();
-//
-//        // Lọc sách theo tiêu đề
-//        for (Book book : popularBooks) {
-//            if (book.getTitle().toLowerCase().contains(textSearch.toLowerCase())) {
-//                filteredBooks.add(book);
-//            }
-//        }
-//
-//        // Cập nhật danh sách sách sau khi tìm kiếm
-//        popularBooksAdapter.submitList(filteredBooks);
-//    }
 
     private void setupClickListeners() {
 //        binding.viewAllPopular.setOnClickListener(v -> {
@@ -217,39 +230,41 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
+
     @SuppressLint("SetTextI18n")
     private void loadUserData() {
         String userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
-        db.collection("parents").document(userId).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            String email = document.getString("email");
-                            welcomeTextView.setText("Welcome, " + email);
-                            timeLimitTextView.setVisibility(View.GONE);
-                        }
-                    }
-                });
+        db.collection("parents").document(userId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    String email = document.getString("email");
+                    welcomeTextView.setText("Welcome, " + email);
+                    timeLimitTextView.setVisibility(View.GONE);
+                }
+            }
+        });
 
-        db.collection("children").whereEqualTo("parentId", userId).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        DocumentSnapshot childDoc = task.getResult().getDocuments().get(0);
-                        String name = childDoc.getString("name");
-                        Long timeLimit = childDoc.getLong("timeLimit");
-                        Integer age = Math.toIntExact(childDoc.getLong("age"));
-                        welcomeTextView.setText("Welcome, " + name);
-                        timeLimitTextView.setText("Time limit: " + timeLimit + " minutes");
-                        timeLimitTextView.setVisibility(View.VISIBLE);
+        db.collection("children").whereEqualTo("parentId", userId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                DocumentSnapshot childDoc = task.getResult().getDocuments().get(0);
+                String name = childDoc.getString("name");
+                Long timeLimit = childDoc.getLong("timeLimit");
+                Integer age = Math.toIntExact(childDoc.getLong("age"));
+                String id = childDoc.getString("childId");
+                welcomeTextView.setText("Welcome, " + name);
+                timeLimitTextView.setText("Time limit: " + timeLimit + " minutes");
+                timeLimitTextView.setVisibility(View.VISIBLE);
 
 
-                        if (age != null) {
-                            HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-                            homeViewModel.setUserAge(age);
-                        }
-                    }
-                });
+                if (age != null) {
+                    homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+                    homeViewModel.setUserAge(age);
+                    homeViewModel.setUserId(id);
+                }
+
+            }
+        });
     }
 }

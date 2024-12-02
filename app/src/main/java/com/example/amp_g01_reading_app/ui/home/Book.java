@@ -3,7 +3,10 @@ package com.example.amp_g01_reading_app.ui.home;
 import com.google.firebase.Timestamp;
 import com.google.type.DateTime;
 
+import java.util.Objects;
+
 public class Book {
+    private String id;
     private String title;
     private String pages;
     private int coverResourceId;
@@ -16,7 +19,19 @@ public class Book {
     private PublishedDate published_date;
     private boolean is_published;
 
-    public Book(String title, String pages, int coverResourceId, String author, String age_group) {
+    //Modify
+    private boolean isBookMark = false;
+
+    public boolean isBookMark() {
+        return isBookMark;
+    }
+
+    public void setBookMark(boolean bookMark) {
+        isBookMark = bookMark;
+    }
+
+    public Book(String id, String title, String pages, int coverResourceId, String author, String age_group) {
+        this.id = id;
         this.title = title;
         this.pages = pages;
         this.coverResourceId = coverResourceId;
@@ -25,6 +40,14 @@ public class Book {
     }
 
     public Book() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setCoverResourceId(int coverResourceId) {
@@ -112,9 +135,10 @@ public class Book {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
+        // Sử dụng Objects.equals để xử lý null tự động
         return coverResourceId == book.coverResourceId &&
-                title.equals(book.title) &&
-                pages.equals(book.pages);
+                Objects.equals(title, book.title) &&
+                Objects.equals(pages, book.pages);
     }
 }
 

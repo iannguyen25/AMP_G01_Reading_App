@@ -6,23 +6,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-
-
-import com.example.amp_g01_reading_app.R;
 import com.example.amp_g01_reading_app.connect.ApiClient;
 import com.example.amp_g01_reading_app.connect.ApiService;
-import com.google.firebase.Timestamp;
-import com.google.type.DateTime;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,14 +24,16 @@ import retrofit2.Response;
 public class HomeViewModel extends ViewModel {
     private final MutableLiveData<List<Book>> popularBooks;
     private final MutableLiveData<List<Book>> newBooks;
-    private MutableLiveData<Integer> userAge = new MutableLiveData<>();
     private final ApiService api;
-    private List<Book> allBooks ;
+    private final MutableLiveData<Integer> userAge = new MutableLiveData<>();
+    private final MutableLiveData<String> userId = new MutableLiveData<>();
+    private final MutableLiveData<List<BookMark>> BookMarksLiveData = new MutableLiveData<>();
+    private List<Book> allBooks;
 
     public HomeViewModel() {
         popularBooks = new MutableLiveData<>();
         newBooks = new MutableLiveData<>();
-        api =  ApiClient.getRetrofitInstance().create(ApiService.class);
+        api = ApiClient.getRetrofitInstance().create(ApiService.class);
         allBooks = new ArrayList<>();
         loadInitialData();
     }
@@ -60,33 +54,22 @@ public class HomeViewModel extends ViewModel {
                 Log.d("API_RESPONSE", "Response code: " + response.code());
                 if (response.isSuccessful() && response.body() != null) {
                     allBooks = response.body();
-                    Integer age = userAge.getValue();
-                    Log.d("AGE_DATA", "tuổi: " + (age != null ? age : 0));
+                    String idUser = userId.getValue();
                     Log.d("BOOKS_DATA", "Số lượng sách: " + (allBooks != null ? allBooks.size() : 0));
-                    for (Book a: allBooks) {
-                        Log.d("BOOKS_DATA_IMAGE", "URL: " + (a != null ? a.getCover_image() : "empty"));
-                        Log.d("BOOKS_DATA_AGE_RANGE", "RANGE: " + (a != null ? a.getAge_range() : "empty"));
-                        long seconds = a.getPublished_date().get_seconds();
-                        Instant instant = Instant.ofEpochSecond(seconds);
-                        LocalDateTime publishedDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-                        Log.d("BOOKS_DATA_PUBLISHED", "DATE: " + publishedDateTime);
-                    }
-                    if (age != null) {
-                        filterBooksByAge(age);
-                        filterBooksByCurrentMonth(popularBooks.getValue());
-                    }
+
+                    fetchBookMarks(idUser);
 
                 }
             }
 
 
-
             @Override
             public void onFailure(Call<List<Book>> call, Throwable t) {
-                Log.d("API_RESPONSE", "API call failed. Response code: " );
+                Log.d("API_RESPONSE", "API call failed. Response code: ");
                 // Handle API call failure
             }
         });
+
 
         //List<Book> newBooksList = new ArrayList<>();
 //        newBooksList.add(new Book("World Book", "3 Pages", R.drawable.jungle_book));
@@ -96,19 +79,15 @@ public class HomeViewModel extends ViewModel {
     }
 
 
-
-
-
-
-    private void filterBooksByAge(int age){
-        if (allBooks ==null || allBooks.isEmpty()){
+    private void filterBooksByAge(int age) {
+        if (allBooks == null || allBooks.isEmpty()) {
             popularBooks.setValue(new ArrayList<>());
             return;
         }
 
         List<Book> filteredBooks = new ArrayList<>();
-        for (Book book : allBooks){
-            if (isAgeInGroup(age, book.getAge_range())){
+        for (Book book : allBooks) {
+            if (isAgeInGroup(age, book.getAge_range())) {
                 filteredBooks.add(book);
             }
         }
@@ -128,9 +107,7 @@ public class HomeViewModel extends ViewModel {
         for (Book book : books) {
             if (book.getPublished_date() != null) {
                 // Convert Firestore timestamp to LocalDate
-                LocalDate publishedDate = Instant.ofEpochSecond(book.getPublished_date().get_seconds())
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate();
+                LocalDate publishedDate = Instant.ofEpochSecond(book.getPublished_date().get_seconds()).atZone(ZoneId.systemDefault()).toLocalDate();
 
                 int publishedMonth = publishedDate.getMonthValue();
                 int publishedYear = publishedDate.getYear();
@@ -146,31 +123,121 @@ public class HomeViewModel extends ViewModel {
         newBooks.setValue(newBooksList);
     }
 
+    //Search Book
+    public void searchBooks(String query) {
+
+        if (!query.isEmpty()) {
+            List<Book> filteredBooks = allBooks.stream().filter(book -> book.getTitle().toLowerCase().contains(query.toLowerCase())).collect(Collectors.toList());
+            popularBooks.setValue(filteredBooks);
+        } else {
+            loadInitialData();
+        }
+    }
+
     //Check age
-    private boolean isAgeInGroup(int userAge, String ageGroup){
-       if (ageGroup.contains("-")){
-           String[] ageRange = ageGroup.split("-");
-           if (ageRange.length==2){
-               int minAge = Integer.parseInt(ageRange[0].trim());
-               int maxAge = Integer.parseInt(ageRange[1].trim());
-               return userAge >= minAge && userAge <=maxAge;
-           }
-       }else{
-           int singleAge = Integer.parseInt(ageGroup.trim());
-           return userAge == singleAge;
-       }
+    private boolean isAgeInGroup(int userAge, String ageGroup) {
+        if (ageGroup.contains("-")) {
+            String[] ageRange = ageGroup.split("-");
+            if (ageRange.length == 2) {
+                int minAge = Integer.parseInt(ageRange[0].trim());
+                int maxAge = Integer.parseInt(ageRange[1].trim());
+                return userAge >= minAge && userAge <= maxAge;
+            }
+        } else {
+            int singleAge = Integer.parseInt(ageGroup.trim());
+            return userAge == singleAge;
+        }
         return false;
     }
 
-        public LiveData<List<Book>> getPopularBooks () {
-            return popularBooks;
-        }
 
-        public LiveData<List<Book>> getNewBooks () {
-            return newBooks;
-        }
+    public LiveData<List<BookMark>> getBookMarks() {
+        return BookMarksLiveData;
+    }
+
+    public void fetchBookMarks(String idUser) {
+
+
+        api.getBookmarks(idUser).enqueue(new Callback<List<BookMark>>() {
+            @Override
+            public void onResponse(Call<List<BookMark>> call, Response<List<BookMark>> response) {
+                if (response.isSuccessful()) {
+                    BookMarksLiveData.setValue(response.body());
+
+                    for (BookMark x : BookMarksLiveData.getValue()) {
+                        Log.d("BOOKMARK_DATA", "ID: " + x.getStory_id());
+                    }
+
+                    // Cập nhật trạng thái isBookmark
+                    for (Book book : allBooks) {
+                        boolean isBookmarked = BookMarksLiveData.getValue().stream().anyMatch(bookmark -> bookmark.getStory_id().equals(book.getId()));
+                        Log.d("BOOK_DATA", "ID: " + book.getId());
+                        book.setBookMark(isBookmarked);
+                    }
+
+                    for (Book book : allBooks) {
+                        Log.d("BOOKS_IS_BOOKMARK", "-------->:" + book.isBookMark());
+                    }
+
+                    Integer age = userAge.getValue();
+                    Log.d("AGE_DATA", "tuổi: " + (age != null ? age : 0));
+                    if (age != null) {
+                        filterBooksByAge(age);
+                        filterBooksByCurrentMonth(popularBooks.getValue());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<BookMark>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void addBookMark(BookMark BookMark) {
+        BookMark.setUser_id(userId.getValue());
+        api.addBookmark(BookMark).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                fetchBookMarks(userId.getValue()); // Refresh BookMarks
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void deleteBookMark(String BookMarkId) {
+        api.deleteBookmark(BookMarkId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                fetchBookMarks(userId.getValue()); // Refresh BookMarks
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+
+    public LiveData<List<Book>> getPopularBooks() {
+        return popularBooks;
+    }
+
+    public LiveData<List<Book>> getNewBooks() {
+        return newBooks;
+    }
 
     public void setUserAge(int age) {
         userAge.setValue(age);
+    }
+
+    public void setUserId(String id) {
+        userId.setValue(id);
     }
 }
