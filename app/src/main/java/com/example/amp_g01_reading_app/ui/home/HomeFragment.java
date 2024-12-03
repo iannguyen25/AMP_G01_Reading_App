@@ -187,6 +187,7 @@ public class HomeFragment extends Fragment {
 
     }
 
+
     private void startSpeechRecognization() {
         Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -229,21 +230,21 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
+
     @SuppressLint("SetTextI18n")
     private void loadUserData() {
         String userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
-        db.collection("parents").document(userId).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            String email = document.getString("email");
-                            welcomeTextView.setText("Welcome, " + email);
-                            timeLimitTextView.setVisibility(View.GONE);
-                        }
-                    }
-                });
+        db.collection("parents").document(userId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    String email = document.getString("email");
+                    welcomeTextView.setText("Welcome, " + email);
+                    timeLimitTextView.setVisibility(View.GONE);
+                }
+            }
+        });
 
         db.collection("children").whereEqualTo("parentId", userId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && !task.getResult().isEmpty()) {
@@ -257,8 +258,11 @@ public class HomeFragment extends Fragment {
                 timeLimitTextView.setVisibility(View.VISIBLE);
 
 
-                HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-                homeViewModel.setUserAge(age);
+                if (age != null) {
+                    homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+                    homeViewModel.setUserAge(age);
+                    homeViewModel.setUserId(id);
+                }
 
             }
         });
