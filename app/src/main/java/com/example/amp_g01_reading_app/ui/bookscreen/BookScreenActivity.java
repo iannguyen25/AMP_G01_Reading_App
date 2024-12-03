@@ -1,10 +1,9 @@
+
 package com.example.amp_g01_reading_app.ui.bookscreen;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
-
+import com.example.amp_g01_reading_app.ui.home.Book;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,9 +18,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.amp_g01_reading_app.R;
-import com.example.amp_g01_reading_app.ui.bookscreen.BookScreenViewModel;
 import com.example.amp_g01_reading_app.ui.comments.CommentsActivity;
-import com.example.amp_g01_reading_app.ui.home.Book;
+import com.example.amp_g01_reading_app.ui.home.PublishedDate;
 
 
 import java.text.SimpleDateFormat;
@@ -38,16 +36,13 @@ public class BookScreenActivity extends AppCompatActivity {
     private  Button fontSettingsButton;
     private SeekBar pageSlider;
     private ImageButton menuButton;
-    private ImageButton buttonBack;
+
 
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_screen);
-
-        //getId
-        String bookId = getIntent().getStringExtra("storyId");
 
         //ánh xạ
         coverImageView = findViewById(R.id.image_book);
@@ -57,7 +52,6 @@ public class BookScreenActivity extends AppCompatActivity {
         pageSlider = findViewById(R.id.page_slider);
         pageNumberLabel = findViewById(R.id.page_number_label);
         menuButton = findViewById(R.id.menu_button);
-        buttonBack = findViewById(R.id.back_button);
         // LiveData cập nhật giao diện khi dữ liệu thay đổi
         BookScreenViewModel viewModel = new ViewModelProvider(this).get(BookScreenViewModel.class);
         viewModel.getBook().observe(this, book -> {
@@ -106,47 +100,36 @@ public class BookScreenActivity extends AppCompatActivity {
                 settingsFragment.show(getSupportFragmentManager(), "SettingsPanelFragment");
             }
         });
-        //BackButton handled
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
         // Xử lí sự kiện cho menu button
         menuButton.setOnClickListener(v -> {
-            // Tạo PopupMenu
             PopupMenu popupMenu = new PopupMenu(this, menuButton);
             popupMenu.getMenuInflater().inflate(R.menu.book_menu, popupMenu.getMenu());
 
-            // Lắng nghe sự kiện chọn mục trong menu
             popupMenu.setOnMenuItemClickListener(item -> {
                 int id = item.getItemId();
                 if (id == R.id.menu_details) {
                     Intent detailsIntent = new Intent(this, BookDetailsActivity.class);
-                    Book book = viewModel.getBook().getValue(); // Lấy dữ liệu từ ViewModel
-                  //  Book.PublishedDate publishedDate = book.getPublishedDate();
+                    Book book = viewModel.getBook().getValue();
                     if (book != null) {
                         detailsIntent.putExtra("title", book.getTitle());
                         detailsIntent.putExtra("author", book.getAuthor_id());
                         detailsIntent.putExtra("ageGroup", book.getAge_range());
-                    }
-//                    if (publishedDate != null) {
-//                        // Chuyển _seconds thành mili giây
-//                        long milliseconds = publishedDate.getSeconds() * 1000;
-//
-//                        Date date = new Date(milliseconds);
-//
-//                        // Định dạng ngày thành "dd-MM-yyyy"
-//                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-//                        String formattedDate = dateFormat.format(date);
-//
-//                        detailsIntent.putExtra("publishedDate", formattedDate);
-//                    }
 
-                    Toast.makeText(this, "Hiển thị chi tiết truyện", Toast.LENGTH_SHORT).show();
-                    //  Chuyển sang màn hình chi tiết sách
+                        Book.PublishedDate publishedDate = book.getPublished_date();
+                        if (publishedDate != null) {
+                            // Chuyển _seconds thành mili giây
+                            long milliseconds = publishedDate.getSeconds() * 1000;
+
+                            Date date = new Date(milliseconds);
+
+                            // Định dạng ngày thành "dd-MM-yyyy"
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                            String formattedDate = dateFormat.format(date);
+
+                            detailsIntent.putExtra("publishedDate", formattedDate);
+                        }
+                    }
+
                     startActivity(detailsIntent);
                     return true;
                 } else if (id == R.id.menu_comments) {
@@ -159,12 +142,12 @@ public class BookScreenActivity extends AppCompatActivity {
                 return false;
             });
 
-            // Hiển thị PopupMenu
             popupMenu.show();
         });
 
+
         // Lấy dữ liệu chi tiết truyện theo ID
-        viewModel.fetchBookDataById(bookId);
+        viewModel.fetchBookDataById("I0l5CXoUuPf4EiwO7Non");
 
     }
 
@@ -200,7 +183,7 @@ public class BookScreenActivity extends AppCompatActivity {
         Toast.makeText(this, "Hiển thị danh sách yêu thích", Toast.LENGTH_SHORT).show();
         // Ví dụ: Chuyển sang màn hình danh sách yêu thích
 //        Intent intent = new Intent(this, FavoritesActivity.class);
-//        startActivity(intent);
     }
-
 }
+
+

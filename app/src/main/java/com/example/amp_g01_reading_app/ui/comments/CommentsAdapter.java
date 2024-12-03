@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.amp_g01_reading_app.R;
-import com.example.amp_g01_reading_app.ui.comments.Comment;
 
 public class CommentsAdapter extends ListAdapter<Comment, CommentsAdapter.CommentViewHolder> {
 

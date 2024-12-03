@@ -11,10 +11,21 @@ import com.example.amp_g01_reading_app.connect.ApiService;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.TimeZone;
+
+
+
+import com.example.amp_g01_reading_app.R;
+import com.example.amp_g01_reading_app.connect.ApiClient;
+import com.example.amp_g01_reading_app.connect.ApiService;
+import com.google.firebase.Timestamp;
+import com.google.type.DateTime;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -61,6 +72,7 @@ public class HomeViewModel extends ViewModel {
 
                 }
             }
+
 
 
             @Override
