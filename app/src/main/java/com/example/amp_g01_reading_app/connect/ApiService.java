@@ -1,5 +1,6 @@
 package com.example.amp_g01_reading_app.connect;
 
+import com.example.amp_g01_reading_app.ui.category.Genre;
 import com.example.amp_g01_reading_app.ui.home.Book;
 import com.example.amp_g01_reading_app.ui.comments.Comment;
 import com.example.amp_g01_reading_app.ui.home.BookMark;
@@ -38,4 +39,10 @@ public interface ApiService {
 
     @DELETE("bookmarks/{id}")
     Call<Void> deleteBookmark(@Path("id") String bookmarkId);
+
+    @GET("genres")
+    Call<List<Genre>> getGenres();
+
+    @GET("Stories/genre/{genre_id}")
+    Call<List<Book>> getStoriesByGenre(@Path("genre_id") String genre_id);
 }
