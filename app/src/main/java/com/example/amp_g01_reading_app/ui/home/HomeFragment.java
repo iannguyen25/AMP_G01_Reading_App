@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.amp_g01_reading_app.R;
 import com.example.amp_g01_reading_app.databinding.FragmentHomeBinding;
+import com.example.amp_g01_reading_app.ui.bookmark.Bookmark;
 import com.example.amp_g01_reading_app.ui.bookscreen.BookScreenActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -172,15 +173,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void hanndleBookmarkClick(Book clickedBook) {
-        List<BookMark> bookmarks = homeViewModel.getBookMarks().getValue();
+        List<Bookmark> bookmarks = homeViewModel.getBookMarks().getValue();
         if (bookmarks != null) {
-            BookMark existingBookmark = bookmarks.stream().filter(b -> b.getStory_id().equals(clickedBook.getId())).findFirst().orElse(null);
+            Bookmark existingBookmark = bookmarks.stream().filter(b -> b.getStoryId().equals(clickedBook.getId())).findFirst().orElse(null);
             if (existingBookmark != null) {
                 homeViewModel.deleteBookMark(existingBookmark.getId());
             } else {
-                BookMark newBookmark = new BookMark();
-                newBookmark.setStory_id(clickedBook.getId());
-                newBookmark.setStatus("favorite");
+                Bookmark newBookmark = new Bookmark();
+                newBookmark.setStoryId(clickedBook.getId());
                 homeViewModel.addBookMark(newBookmark);
             }
         }

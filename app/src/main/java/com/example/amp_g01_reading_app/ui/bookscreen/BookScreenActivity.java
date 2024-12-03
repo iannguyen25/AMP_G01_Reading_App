@@ -1,10 +1,12 @@
+
 package com.example.amp_g01_reading_app.ui.bookscreen;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.amp_g01_reading_app.ui.bookmark.BookmarkActivity;
+import com.example.amp_g01_reading_app.ui.bookmark.BookmarkViewModel;
+import com.example.amp_g01_reading_app.ui.home.Book;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,9 +21,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.amp_g01_reading_app.R;
-import com.example.amp_g01_reading_app.ui.bookscreen.BookScreenViewModel;
 import com.example.amp_g01_reading_app.ui.comments.CommentsActivity;
-import com.example.amp_g01_reading_app.ui.home.Book;
+import com.example.amp_g01_reading_app.ui.home.PublishedDate;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import java.text.SimpleDateFormat;
@@ -35,20 +39,17 @@ public class BookScreenActivity extends AppCompatActivity {
     private int totalPages;
     private List<String> pages;
     private ImageView coverImageView;
-    private  Button fontSettingsButton;
+    private Button fontSettingsButton;
     private SeekBar pageSlider;
-    private ImageButton menuButton;
-    private ImageButton buttonBack;
+    private ImageButton menuButton,bookmarkButton;
+    private BookmarkViewModel bookmarkViewModel;
+    private FirebaseAuth mAuth;
 
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_screen);
-
-        //getId
-        String bookId = getIntent().getStringExtra("storyId");
-
         //ánh xạ
         coverImageView = findViewById(R.id.image_book);
         titleTextView = findViewById(R.id.title_book);
@@ -57,7 +58,11 @@ public class BookScreenActivity extends AppCompatActivity {
         pageSlider = findViewById(R.id.page_slider);
         pageNumberLabel = findViewById(R.id.page_number_label);
         menuButton = findViewById(R.id.menu_button);
-        buttonBack = findViewById(R.id.back_button);
+        bookmarkButton = findViewById(R.id.bookmark_button);
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        String user_id = user.getUid().toString();
         // LiveData cập nhật giao diện khi dữ liệu thay đổi
         BookScreenViewModel viewModel = new ViewModelProvider(this).get(BookScreenViewModel.class);
         viewModel.getBook().observe(this, book -> {
@@ -106,65 +111,74 @@ public class BookScreenActivity extends AppCompatActivity {
                 settingsFragment.show(getSupportFragmentManager(), "SettingsPanelFragment");
             }
         });
-        //BackButton handled
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
         // Xử lí sự kiện cho menu button
         menuButton.setOnClickListener(v -> {
-            // Tạo PopupMenu
             PopupMenu popupMenu = new PopupMenu(this, menuButton);
             popupMenu.getMenuInflater().inflate(R.menu.book_menu, popupMenu.getMenu());
 
-            // Lắng nghe sự kiện chọn mục trong menu
             popupMenu.setOnMenuItemClickListener(item -> {
                 int id = item.getItemId();
                 if (id == R.id.menu_details) {
                     Intent detailsIntent = new Intent(this, BookDetailsActivity.class);
-                    Book book = viewModel.getBook().getValue(); // Lấy dữ liệu từ ViewModel
-                  //  Book.PublishedDate publishedDate = book.getPublishedDate();
+                    Book book = viewModel.getBook().getValue();
                     if (book != null) {
                         detailsIntent.putExtra("title", book.getTitle());
-                        detailsIntent.putExtra("author", book.getAuthor_id());
-                        detailsIntent.putExtra("ageGroup", book.getAge_range());
-                    }
-//                    if (publishedDate != null) {
-//                        // Chuyển _seconds thành mili giây
-//                        long milliseconds = publishedDate.getSeconds() * 1000;
-//
-//                        Date date = new Date(milliseconds);
-//
-//                        // Định dạng ngày thành "dd-MM-yyyy"
-//                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-//                        String formattedDate = dateFormat.format(date);
-//
-//                        detailsIntent.putExtra("publishedDate", formattedDate);
-//                    }
+                        detailsIntent.putExtra("author", book.getAuthor());
+                        detailsIntent.putExtra("ageGroup", book.getAge_group());
 
-                    Toast.makeText(this, "Hiển thị chi tiết truyện", Toast.LENGTH_SHORT).show();
-                    //  Chuyển sang màn hình chi tiết sách
+                        Book.PublishedDate publishedDate = book.getPublished_date();
+                        if (publishedDate != null) {
+                            // Chuyển _seconds thành mili giây
+                            long milliseconds = publishedDate.getSeconds() * 1000;
+
+                            Date date = new Date(milliseconds);
+
+                            // Định dạng ngày thành "dd-MM-yyyy"
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                            String formattedDate = dateFormat.format(date);
+
+                            detailsIntent.putExtra("publishedDate", formattedDate);
+                        }
+                    }
+
                     startActivity(detailsIntent);
                     return true;
                 } else if (id == R.id.menu_comments) {
-                    showComments();
+                    String storyId = "I0l5CXoUuPf4EiwO7Non";// ID của truyện
+                    Intent intent = new Intent(BookScreenActivity.this, CommentsActivity.class);
+                    intent.putExtra("STORY_ID", storyId);
+                    intent.putExtra("USER_ID",user_id);// Truyền ID của truyện cho CommentsActivity
+                    startActivity(intent);
                     return true;
                 } else if (id == R.id.menu_favorites) {
-                    showFavorites();
+                    Intent intent = new Intent(this,BookmarkActivity.class);
+                    intent.putExtra("USER_ID",user_id);
+                    startActivity(intent);
                     return true;
                 }
                 return false;
             });
 
-            // Hiển thị PopupMenu
             popupMenu.show();
+        });
+        //Xử lí sự kiện cho bookmarkButton
+        bookmarkViewModel = new ViewModelProvider(this).get(BookmarkViewModel.class);
+        bookmarkButton.setOnClickListener(v -> {
+            // Gọi phương thức thêm bookmark trong ViewModel
+            bookmarkViewModel.addBookmark(viewModel.getBook().getValue().getId(),user_id,viewModel.getBook().getValue().getTitle(),
+                    viewModel.getBook().getValue().getAuthor(),viewModel.getBook().getValue().getAge_group(),
+                    viewModel.getBook().getValue().getCover_image());
+
+            // Lắng nghe kết quả từ ViewModel
+            bookmarkViewModel.getErrorMessage().observe(this, message -> {
+                if (message != null) {
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         // Lấy dữ liệu chi tiết truyện theo ID
-        viewModel.fetchBookDataById(bookId);
+        viewModel.fetchBookDataById("I0l5CXoUuPf4EiwO7Non");
 
     }
 
@@ -186,21 +200,6 @@ public class BookScreenActivity extends AppCompatActivity {
         }
     }
 
-
-    private void showComments() {
-        String storyId = "I0l5CXoUuPf4EiwO7Non"; // ID của truyện
-        Intent intent = new Intent(BookScreenActivity.this, CommentsActivity.class);
-        intent.putExtra("STORY_ID", storyId); // Truyền ID của truyện cho CommentsActivity
-        startActivity(intent);
-    }
-
-
-    private void showFavorites() {
-        // Xử lý danh sách yêu thích
-        Toast.makeText(this, "Hiển thị danh sách yêu thích", Toast.LENGTH_SHORT).show();
-        // Ví dụ: Chuyển sang màn hình danh sách yêu thích
-//        Intent intent = new Intent(this, FavoritesActivity.class);
-//        startActivity(intent);
-    }
-
 }
+
+

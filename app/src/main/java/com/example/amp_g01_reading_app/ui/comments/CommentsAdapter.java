@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.amp_g01_reading_app.R;
-import com.example.amp_g01_reading_app.ui.comments.Comment;
 
 public class CommentsAdapter extends ListAdapter<Comment, CommentsAdapter.CommentViewHolder> {
 
@@ -39,6 +38,7 @@ public class CommentsAdapter extends ListAdapter<Comment, CommentsAdapter.Commen
         Comment comment = getItem(position);
 
         holder.commentTextView.setText(comment.getComment());
+        holder.commentUser.setText(comment.getEmail());
     }
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
@@ -47,6 +47,7 @@ public class CommentsAdapter extends ListAdapter<Comment, CommentsAdapter.Commen
         public CommentViewHolder(View itemView) {
             super(itemView);
             commentTextView = itemView.findViewById(R.id.comment_content);
+            commentUser = itemView.findViewById(R.id.comment_user_name);
         }
     }
 }

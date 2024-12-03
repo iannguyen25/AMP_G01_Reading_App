@@ -1,7 +1,6 @@
 package com.example.amp_g01_reading_app.ui.home;
 
 import com.google.firebase.Timestamp;
-import com.google.type.DateTime;
 
 import java.util.Objects;
 
@@ -39,15 +38,47 @@ public class Book {
         this.age_group = age_group;
     }
 
-    public Book() {
-    }
+    public Book() {}
 
+    // Getters and Setters
     public String getId() {
         return id;
     }
 
+    public static class PublishedDate {
+        private long seconds;
+
+        public long getSeconds() {
+            return seconds;
+        }
+
+        public void setSeconds(long seconds) {
+            this.seconds = seconds;
+        }
+    }
+
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPages() {
+        return pages;
+    }
+
+    public void setPages(String pages) {
+        this.pages = pages;
+    }
+
+    public int getCoverResourceId() {
+        return coverResourceId;
     }
 
     public void setCoverResourceId(int coverResourceId) {
@@ -70,11 +101,11 @@ public class Book {
         this.content = content;
     }
 
-    public String getAuthor_id() {
+    public String getAuthor() {
         return author;
     }
 
-    public void setAuthor_id(String author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
@@ -86,20 +117,12 @@ public class Book {
         this.genre_id = genre_id;
     }
 
-    public String getAge_range() {
+    public String getAge_group() {
         return age_group;
     }
 
-    public void setAge_range(String age_group) {
+    public void setAge_group(String age_group) {
         this.age_group = age_group;
-    }
-
-    public PublishedDate getPublished_date() {
-        return published_date;
-    }
-
-    public void setPublished_date(PublishedDate  published_date) {
-        this.published_date = published_date;
     }
 
     public String getCover_image() {
@@ -110,6 +133,14 @@ public class Book {
         this.cover_image = cover_image;
     }
 
+    public PublishedDate getPublished_date() {
+        return published_date;
+    }
+
+    public void setPublished_date(PublishedDate published_date) {
+        this.published_date = published_date;
+    }
+
     public boolean isIs_published() {
         return is_published;
     }
@@ -118,24 +149,11 @@ public class Book {
         this.is_published = is_published;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getPages() {
-        return pages;
-    }
-
-    public int getCoverResourceId() {
-        return coverResourceId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        // Sử dụng Objects.equals để xử lý null tự động
         return coverResourceId == book.coverResourceId &&
                 Objects.equals(title, book.title) &&
                 Objects.equals(pages, book.pages);

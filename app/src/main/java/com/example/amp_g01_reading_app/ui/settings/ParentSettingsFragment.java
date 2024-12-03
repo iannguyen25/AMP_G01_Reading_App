@@ -2,7 +2,6 @@ package com.example.amp_g01_reading_app.ui.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +20,8 @@ import com.example.amp_g01_reading_app.ui.settings.dashboard_management.ParentDa
 import com.example.amp_g01_reading_app.ui.settings.management_settings.AdjustTimeLimitDialogFragment;
 import com.example.amp_g01_reading_app.ui.settings.management_settings.AgeLimitFragment;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class ParentSettingsFragment extends Fragment {

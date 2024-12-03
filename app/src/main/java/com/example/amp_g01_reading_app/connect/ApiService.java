@@ -1,9 +1,9 @@
 package com.example.amp_g01_reading_app.connect;
 
+import com.example.amp_g01_reading_app.ui.bookmark.Bookmark;
 import com.example.amp_g01_reading_app.ui.category.Genre;
 import com.example.amp_g01_reading_app.ui.home.Book;
 import com.example.amp_g01_reading_app.ui.comments.Comment;
-import com.example.amp_g01_reading_app.ui.home.BookMark;
 
 import java.util.List;
 
@@ -22,20 +22,20 @@ public interface ApiService {
     // Endpoint để lấy thông tin chi tiết của một truyện
     @GET("Stories/{id}")
     Call<Book> getStoryById(@Path("id") String storyId);
-    //
-    @GET("comments/{storyId}")
+
+    // Lấy danh sách bình luận cho một truyện
+    @GET("Comments/{storyId}")
     Call<List<Comment>> getComments(@Path("storyId") String storyId);
 
+    @POST("Comments")
+    Call<Void> addComment(@Body Comment comment);
+
     // Gửi bình luận mới
-    @POST("comments")
-    Call<Void> postComment(@Body Comment comment);
-    //  thêm các endpoint khác tương ứng với web service
+    @POST("Bookmarks")
+    Call<Void> addBookmark(@Body Bookmark bookmark);
 
     @GET("bookmarks/{userId}")
-    Call<List<BookMark>> getBookmarks(@Path("userId") String userId);
-
-    @POST("bookmarks")
-    Call<Void> addBookmark(@Body BookMark bookmark);
+    Call<List<Bookmark>> getBookmarksByUserId(@Path("userId") String userId);
 
     @DELETE("bookmarks/{id}")
     Call<Void> deleteBookmark(@Path("id") String bookmarkId);

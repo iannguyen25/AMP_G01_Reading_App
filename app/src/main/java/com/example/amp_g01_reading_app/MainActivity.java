@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.amp_g01_reading_app.databinding.ActivityMainBinding;
 import com.example.amp_g01_reading_app.ui.authentication.AccountSelectionActivity;
 import com.example.amp_g01_reading_app.ui.authentication.login.LoginActivity;
+import com.example.amp_g01_reading_app.ui.bookmark.BookmarkActivity;
 import com.example.amp_g01_reading_app.ui.home.Book;
 import com.example.amp_g01_reading_app.ui.settings.management_settings.StoriesAdapter;
 import com.example.amp_g01_reading_app.ui.settings.management_settings.StoriesRepository;
@@ -98,8 +99,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupNavigation(ActivityMainBinding binding) {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+
+        binding.navView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            // Handle navigation item clicks
+            if (itemId == R.id.navigation_home) {
+                navController.navigate(R.id.navigation_home);
+                return true;
+            } else if (itemId == R.id.navigation_category) {
+                navController.navigate(R.id.navigation_category);
+                return true;
+            } else if (itemId == R.id.navigation_notifications) {
+                // Navigate to BookmarkActivity
+                // Consider adding BookmarkActivity to your navigation graph for better integration
+                Intent bookmarkIntent = new Intent(this, BookmarkActivity.class);
+                startActivity(bookmarkIntent);
+                return true;
+            } else if (itemId == R.id.navigation_settings) {
+                navController.navigate(R.id.navigation_settings);
+                return true;
+            } else {
+                return false;
+            }
+        });
     }
+
 
     private void initializeFirebase() {
         mAuth = FirebaseAuth.getInstance();

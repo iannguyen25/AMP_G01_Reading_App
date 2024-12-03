@@ -8,13 +8,25 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.amp_g01_reading_app.connect.ApiClient;
 import com.example.amp_g01_reading_app.connect.ApiService;
+import com.example.amp_g01_reading_app.ui.bookmark.Bookmark;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
+
+
+import com.example.amp_g01_reading_app.R;
+import com.example.amp_g01_reading_app.connect.ApiClient;
+import com.example.amp_g01_reading_app.connect.ApiService;
+import com.google.firebase.Timestamp;
+import com.google.type.DateTime;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +39,7 @@ public class HomeViewModel extends ViewModel {
     private final ApiService api;
     private final MutableLiveData<Integer> userAge = new MutableLiveData<>();
     private final MutableLiveData<String> userId = new MutableLiveData<>();
-    private final MutableLiveData<List<BookMark>> BookMarksLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Bookmark>> BookMarksLiveData = new MutableLiveData<>();
     private List<Book> allBooks;
 
     public HomeViewModel() {
@@ -41,13 +53,6 @@ public class HomeViewModel extends ViewModel {
     private void loadInitialData() {
         // Populate with sample data
         List<Book> popular = new ArrayList<>();
-//        popular.add(new Book("Jungle Book", "4 Pages", R.drawable.jungle_book));
-//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-        //popularBooks.setValue(popular);
         api.getStories().enqueue(new Callback<List<Book>>() {
             @Override
             public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
@@ -61,6 +66,7 @@ public class HomeViewModel extends ViewModel {
 
                 }
             }
+
 
 
             @Override
@@ -87,7 +93,7 @@ public class HomeViewModel extends ViewModel {
 
         List<Book> filteredBooks = new ArrayList<>();
         for (Book book : allBooks) {
-            if (isAgeInGroup(age, book.getAge_range())) {
+            if (isAgeInGroup(age, book.getAge_group())) {
                 filteredBooks.add(book);
             }
         }
@@ -107,7 +113,7 @@ public class HomeViewModel extends ViewModel {
         for (Book book : books) {
             if (book.getPublished_date() != null) {
                 // Convert Firestore timestamp to LocalDate
-                LocalDate publishedDate = Instant.ofEpochSecond(book.getPublished_date().get_seconds()).atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate publishedDate = Instant.ofEpochSecond(book.getPublished_date().getSeconds()).atZone(ZoneId.systemDefault()).toLocalDate();
 
                 int publishedMonth = publishedDate.getMonthValue();
                 int publishedYear = publishedDate.getYear();
@@ -151,26 +157,26 @@ public class HomeViewModel extends ViewModel {
     }
 
 
-    public LiveData<List<BookMark>> getBookMarks() {
+    public LiveData<List<Bookmark>> getBookMarks() {
         return BookMarksLiveData;
     }
 
     public void fetchBookMarks(String idUser) {
 
 
-        api.getBookmarks(idUser).enqueue(new Callback<List<BookMark>>() {
+        api.getBookmarksByUserId(idUser).enqueue(new Callback<List<Bookmark>>() {
             @Override
-            public void onResponse(Call<List<BookMark>> call, Response<List<BookMark>> response) {
+            public void onResponse(Call<List<Bookmark>> call, Response<List<Bookmark>> response) {
                 if (response.isSuccessful()) {
                     BookMarksLiveData.setValue(response.body());
 
-                    for (BookMark x : BookMarksLiveData.getValue()) {
-                        Log.d("BOOKMARK_DATA", "ID: " + x.getStory_id());
+                    for (Bookmark x : BookMarksLiveData.getValue()) {
+                        Log.d("BOOKMARK_DATA", "ID: " + x.getStoryId());
                     }
 
                     // Cập nhật trạng thái isBookmark
                     for (Book book : allBooks) {
-                        boolean isBookmarked = BookMarksLiveData.getValue().stream().anyMatch(bookmark -> bookmark.getStory_id().equals(book.getId()));
+                        boolean isBookmarked = BookMarksLiveData.getValue().stream().anyMatch(bookmark -> bookmark.getStoryId().equals(book.getId()));
                         Log.d("BOOK_DATA", "ID: " + book.getId());
                         book.setBookMark(isBookmarked);
                     }
@@ -189,14 +195,14 @@ public class HomeViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<List<BookMark>> call, Throwable t) {
+            public void onFailure(Call<List<Bookmark>> call, Throwable t) {
                 t.printStackTrace();
             }
         });
     }
 
-    public void addBookMark(BookMark BookMark) {
-        BookMark.setUser_id(userId.getValue());
+    public void addBookMark(Bookmark BookMark) {
+        BookMark.setUserId(userId.getValue());
         api.addBookmark(BookMark).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

@@ -52,7 +52,7 @@ public class CommentsViewModel extends ViewModel {
     // Phương thức để gửi bình luận
     public void postComment(Comment comment) {
         ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
-        apiService.postComment(comment).enqueue(new Callback<Void>() {
+        apiService.addComment(comment).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 postCommentResult.postValue(response.isSuccessful());
