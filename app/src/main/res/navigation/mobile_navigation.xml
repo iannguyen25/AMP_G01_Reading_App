@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.example.amp_g01_reading_app.ui.notifications.NotificationsFragment"
+        android:name="com.example.amp_g01_reading_app.ui.book.NotificationsFragment"
         android:label="@string/library"
         tools:layout="@layout/fragment_notifications" />
 

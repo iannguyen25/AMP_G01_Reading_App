@@ -38,6 +38,7 @@ public class CommentsAdapter extends ListAdapter<Comment, CommentsAdapter.Commen
         Comment comment = getItem(position);
 
         holder.commentTextView.setText(comment.getComment());
+        holder.commentUser.setText(comment.getEmail());
     }
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
@@ -46,6 +47,7 @@ public class CommentsAdapter extends ListAdapter<Comment, CommentsAdapter.Commen
         public CommentViewHolder(View itemView) {
             super(itemView);
             commentTextView = itemView.findViewById(R.id.comment_content);
+            commentUser = itemView.findViewById(R.id.comment_user_name);
         }
     }
 }
