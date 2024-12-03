@@ -36,7 +36,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
     public void onBindViewHolder(@NonNull StoryViewHolder holder, int position) {
         Book book = stories.get(position);
         holder.titleTextView.setText(book.getTitle());
-        holder.authorTextView.setText(book.getAuthor_id());
+        holder.authorTextView.setText(book.getAuthor());
         holder.bookCover.setImageResource(book.getCoverResourceId());
         Glide.with(holder.bookCover.getContext())
                 .load(book.getCover_image())
