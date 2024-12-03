@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-
+import java.util.stream.Collectors;
 
 
 import com.example.amp_g01_reading_app.R;
@@ -119,7 +119,7 @@ public class HomeViewModel extends ViewModel {
         for (Book book : books) {
             if (book.getPublished_date() != null) {
                 // Convert Firestore timestamp to LocalDate
-                LocalDate publishedDate = Instant.ofEpochSecond(book.getPublished_date().get_seconds()).atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate publishedDate = Instant.ofEpochSecond(book.getPublished_date().getSeconds()).atZone(ZoneId.systemDefault()).toLocalDate();
 
                 int publishedMonth = publishedDate.getMonthValue();
                 int publishedYear = publishedDate.getYear();

@@ -42,6 +42,18 @@ public class Book {
     public Book() {
     }
 
+    public static class PublishedDate {
+        private long seconds;
+
+        public long getSeconds() {
+            return seconds;
+        }
+
+        public void setSeconds(long seconds) {
+            this.seconds = seconds;
+        }
+    }
+
     public String getId() {
         return id;
     }
