@@ -38,8 +38,8 @@ public class StoriesAdapter extends RecyclerView.Adapter<StoriesAdapter.StoryVie
         holder.textViewTitle.setText(book.getTitle());
 
         // Set author (handle potential null)
-        if (book.getAuthor_id() != null) {
-            holder.textViewAuthor.setText(book.getAuthor_id());
+        if (book.getAuthor() != null) {
+            holder.textViewAuthor.setText(book.getAuthor());
         } else {
             holder.textViewAuthor.setText("Unknown Author");
         }

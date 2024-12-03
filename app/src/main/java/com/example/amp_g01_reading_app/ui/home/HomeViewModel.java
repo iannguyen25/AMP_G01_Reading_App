@@ -48,13 +48,6 @@ public class HomeViewModel extends ViewModel {
     private void loadInitialData() {
         // Populate with sample data
         List<Book> popular = new ArrayList<>();
-//        popular.add(new Book("Jungle Book", "4 Pages", R.drawable.jungle_book));
-//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-//        popular.add(new Book("Kindworld", "4 Pages", R.drawable.jungle_book));
-        //popularBooks.setValue(popular);
         api.getStories().enqueue(new Callback<List<Book>>() {
             @Override
             public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
@@ -67,7 +60,7 @@ public class HomeViewModel extends ViewModel {
                     for (Book a: allBooks) {
                         Log.d("BOOKS_DATA_IMAGE", "URL: " + (a != null ? a.getCover_image() : "empty"));
                         Log.d("BOOKS_DATA_AGE_RANGE", "RANGE: " + (a != null ? a.getAge_range() : "empty"));
-                        long seconds = a.getPublished_date().get_seconds();
+                        long seconds = a.getPublished_date().getSeconds();
                         Instant instant = Instant.ofEpochSecond(seconds);
                         LocalDateTime publishedDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
                         Log.d("BOOKS_DATA_PUBLISHED", "DATE: " + publishedDateTime);
@@ -89,11 +82,6 @@ public class HomeViewModel extends ViewModel {
             }
         });
 
-        //List<Book> newBooksList = new ArrayList<>();
-//        newBooksList.add(new Book("World Book", "3 Pages", R.drawable.jungle_book));
-//        newBooksList.add(new Book("Help Book", "5 Pages", R.drawable.jungle_book));
-
-        //newBooks.setValue(newBooksList);
     }
 
 
@@ -129,7 +117,7 @@ public class HomeViewModel extends ViewModel {
         for (Book book : books) {
             if (book.getPublished_date() != null) {
                 // Convert Firestore timestamp to LocalDate
-                LocalDate publishedDate = Instant.ofEpochSecond(book.getPublished_date().get_seconds())
+                LocalDate publishedDate = Instant.ofEpochSecond(book.getPublished_date().getSeconds())
                         .atZone(ZoneId.systemDefault())
                         .toLocalDate();
 

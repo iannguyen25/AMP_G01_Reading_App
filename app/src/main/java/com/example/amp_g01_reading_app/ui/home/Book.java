@@ -1,9 +1,9 @@
 package com.example.amp_g01_reading_app.ui.home;
 
 import com.google.firebase.Timestamp;
-import com.google.type.DateTime;
 
 public class Book {
+    private String id;
     private String title;
     private String pages;
     private int coverResourceId;
@@ -24,11 +24,23 @@ public class Book {
         this.age_group = age_group;
     }
 
-    public Book() {
+    public Book() {}
+
+    // Getters and Setters
+    public String getId() {
+        return id;
     }
 
-    public void setCoverResourceId(int coverResourceId) {
-        this.coverResourceId = coverResourceId;
+    public String getTitle() {
+        return title;
+    }
+
+    public String getPages() {
+        return pages;
+    }
+
+    public int getCoverResourceId() {
+        return coverResourceId;
     }
 
     public String getDescription() {
@@ -47,7 +59,7 @@ public class Book {
         this.content = content;
     }
 
-    public String getAuthor_id() {
+    public String getAuthor() {
         return author;
     }
 
@@ -75,7 +87,7 @@ public class Book {
         return published_date;
     }
 
-    public void setPublished_date(PublishedDate  published_date) {
+    public void setPublished_date(PublishedDate published_date) {
         this.published_date = published_date;
     }
 
@@ -95,18 +107,6 @@ public class Book {
         this.is_published = is_published;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getPages() {
-        return pages;
-    }
-
-    public int getCoverResourceId() {
-        return coverResourceId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -116,6 +116,17 @@ public class Book {
                 title.equals(book.title) &&
                 pages.equals(book.pages);
     }
+
+    // Inner class PublishedDate
+    public static class PublishedDate {
+        private long seconds;
+
+        public long getSeconds() {
+            return seconds;
+        }
+
+        public void setSeconds(long seconds) {
+            this.seconds = seconds;
+        }
+    }
 }
-
-

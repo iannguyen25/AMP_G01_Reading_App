@@ -1,5 +1,6 @@
 package com.example.amp_g01_reading_app.connect;
 
+import com.example.amp_g01_reading_app.ui.bookmark.Bookmark;
 import com.example.amp_g01_reading_app.ui.home.Book;
 import com.example.amp_g01_reading_app.ui.comments.Comment;
 
@@ -19,12 +20,20 @@ public interface ApiService {
     // Endpoint để lấy thông tin chi tiết của một truyện
     @GET("Stories/{id}")
     Call<Book> getStoryById(@Path("id") String storyId);
-    //
-    @GET("comments/{storyId}")
+
+    // Lấy danh sách bình luận cho một truyện
+    @GET("Comments/{storyId}")
     Call<List<Comment>> getComments(@Path("storyId") String storyId);
 
     // Gửi bình luận mới
-    @POST("comments")
-    Call<Void> postComment(@Body Comment comment);
-    //  thêm các endpoint khác tương ứng với web service
+    @POST("Comments")
+    Call<Void> addComment(@Body Comment comment);
+
+    // Lấy danh sách bookmark theo userId
+    @GET("Bookmarks/{userId}")
+    Call<List<Bookmark>> getBookmarksByUserId(@Path("userId") String userId);
+
+    // Thêm một bookmark mới
+    @POST("Bookmarks")
+    Call<Void> addBookmark(@Body Bookmark bookmark);
 }

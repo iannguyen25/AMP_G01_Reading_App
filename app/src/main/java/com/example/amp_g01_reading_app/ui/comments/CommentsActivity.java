@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.amp_g01_reading_app.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class CommentsActivity extends AppCompatActivity {
 
@@ -20,19 +22,22 @@ public class CommentsActivity extends AppCompatActivity {
     private EditText editTextComment;
     private Button buttonPostComment;
     private CommentsViewModel commentsViewModel;
-
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
 
-        // Lấy ID truyện từ Intent (có thể truyền từ BookScreenActivity)
+        // Lấy ID truyện từ Intent truyền từ BookScreenActivity
         String storyId = getIntent().getStringExtra("STORY_ID");
+        String UserId = getIntent().getStringExtra("USER_ID");
 
         recyclerView = findViewById(R.id.recycler_view_comments);
         editTextComment = findViewById(R.id.edit_text_comment);
         buttonPostComment = findViewById(R.id.button_post_comment);
-
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        String email = user.getEmail().toString();
         // Setup RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         commentAdapter = new CommentsAdapter();
@@ -60,7 +65,7 @@ public class CommentsActivity extends AppCompatActivity {
                 Toast.makeText(CommentsActivity.this, "Vui lòng nhập bình luận", Toast.LENGTH_SHORT).show();
             } else {
                 // Tạo đối tượng Comment và gửi tới API
-                Comment comment = new Comment(storyId, "user456", commentText); // user456 là ID giả
+                Comment comment = new Comment(storyId, UserId,email, commentText); //
                 commentsViewModel.postComment(comment);
 
                 // Xử lý kết quả gửi bình luận
