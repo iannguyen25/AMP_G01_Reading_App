@@ -110,11 +110,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.navigation_category) {
                 navController.navigate(R.id.navigation_category);
                 return true;
-            } else if (itemId == R.id.navigation_notifications) {
-                // Navigate to BookmarkActivity
-                // Consider adding BookmarkActivity to your navigation graph for better integration
-                Intent bookmarkIntent = new Intent(this, BookmarkActivity.class);
-                startActivity(bookmarkIntent);
+            } else if (itemId == R.id.navigation_bookmark) {
+                navController.navigate(R.id.navigation_bookmark);
                 return true;
             } else if (itemId == R.id.navigation_settings) {
                 navController.navigate(R.id.navigation_settings);

@@ -25,9 +25,6 @@ public class BookmarkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bookmark);
         // Lấy userId từ Intent hoặc SharedPreferences
         String userId = getIntent().getStringExtra("USER_ID");
-        if (userId == null) {
-            userId = "1";
-        }
 
         // Khởi tạo RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recycler_view_bookmarks);

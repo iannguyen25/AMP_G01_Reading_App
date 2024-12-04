@@ -3,6 +3,7 @@ package com.example.amp_g01_reading_app.ui.bookscreen;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.amp_g01_reading_app.MainActivity;
 import com.example.amp_g01_reading_app.ui.bookmark.BookmarkActivity;
 import com.example.amp_g01_reading_app.ui.bookmark.BookmarkViewModel;
 import com.example.amp_g01_reading_app.ui.home.Book;
@@ -149,15 +150,17 @@ public class BookScreenActivity extends AppCompatActivity {
                 } else if (id == R.id.menu_comments) {
                     Intent intent = new Intent(BookScreenActivity.this, CommentsActivity.class);
                     intent.putExtra("STORY_ID", storyId);
-                    intent.putExtra("USER_ID",user_id);// Truyền ID của truyện cho CommentsActivity
-                    startActivity(intent);
-                    return true;
-                } else if (id == R.id.menu_favorites) {
-                    Intent intent = new Intent(this, BookmarkActivity.class);
                     intent.putExtra("USER_ID",user_id);
                     startActivity(intent);
                     return true;
+                } if (id == R.id.menu_favorites) {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.putExtra("SHOW_FRAGMENT", "BookmarkFragment");
+                    intent.putExtra("USER_ID", user_id);
+                    startActivity(intent);
+                    return true;
                 }
+
                 return false;
             });
 

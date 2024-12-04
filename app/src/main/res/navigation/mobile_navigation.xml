@@ -18,10 +18,10 @@
         tools:layout="@layout/fragment_category" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.amp_g01_reading_app.ui.book.NotificationsFragment"
-        android:label="@string/library"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_bookmark"
+        android:name="com.example.amp_g01_reading_app.ui.bookmark.BookmarkFragment"
+        android:label="Danh sách yêu thích"
+        tools:layout="@layout/fragment_bookmark" />
 
     <fragment
         android:id="@+id/navigation_settings"
