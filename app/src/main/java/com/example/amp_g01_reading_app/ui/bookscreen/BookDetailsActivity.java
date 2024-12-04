@@ -16,7 +16,6 @@ public class BookDetailsActivity extends AppCompatActivity {
         TextView titleTextView = findViewById(R.id.book_title);
         TextView authorTextView = findViewById(R.id.book_author);
         TextView ageGroupTextView = findViewById(R.id.book_age_group);
-        TextView publishedDateTextView = findViewById(R.id.book_published_date);
 
         // Lấy dữ liệu từ Intent
         Bundle extras = getIntent().getExtras();
@@ -24,13 +23,13 @@ public class BookDetailsActivity extends AppCompatActivity {
             String title = extras.getString("title");
             String author = extras.getString("author");
             String ageGroup = extras.getString("ageGroup");
-            String publishedDate = extras.getString("publishedDate");
+
 
             // Hiển thị dữ liệu lên giao diện
             titleTextView.setText("Tên truyện: " + title);
             authorTextView.setText("Tác giả: " + author);
             ageGroupTextView.setText("Độ tuổi: " + ageGroup);
-            publishedDateTextView.setText("Ngày đăng: " + publishedDate);
+
         }
     }
 }
