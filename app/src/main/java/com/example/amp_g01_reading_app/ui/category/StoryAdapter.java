@@ -18,7 +18,12 @@ import java.util.List;
 
 public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHolder> {
 
+    public interface OnItemClickListener {
+        void onItemClick(Book book);
+    }
+
     private List<Book> stories;
+    private OnItemClickListener onItemClickListener;
 
     public StoryAdapter(List<Book> stories) {
         this.stories = stories;
@@ -43,6 +48,12 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
                 .placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.error_image)
                 .into(holder.bookCover);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(book);
+            }
+        });
     }
 
     @Override

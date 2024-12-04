@@ -1,6 +1,8 @@
 package com.example.amp_g01_reading_app.ui.settings.dashboard_management;
 
 import android.annotation.SuppressLint;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,14 +25,18 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParentDashboardActivity extends AppCompatActivity {
+public class ParentDashboardActivity extends AppCompatActivity implements ShakeDetector.ShakeListener {
     private ViewPager2 viewPager;
     private TextView appBarLabel;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private List<ChildData> childrenData;
     private ChildDashboardAdapter adapter;
-    private TabLayout  tabLayout;
+    private TabLayout tabLayout;
+
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private ShakeDetector shakeDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +48,46 @@ public class ParentDashboardActivity extends AppCompatActivity {
         childrenData = new ArrayList<>();
 
         initViews();
-//        setupSwipeRefresh();
         setupViewPagerIndicator();
         loadChildrenData();
         setupRealtimeUpdates();
+
+        // Khởi tạo cảm biến
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if (sensorManager != null) {
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            shakeDetector = new ShakeDetector(this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (sensorManager != null && accelerometer != null) {
+            sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (sensorManager != null && accelerometer != null) {
+            sensorManager.unregisterListener(shakeDetector);
+        }
+    }
+
+    @Override
+    public void onShakeLeft() {
+        if (viewPager != null && viewPager.getCurrentItem() < childrenData.size() - 1) {
+            viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+        }
+    }
+
+    @Override
+    public void onShakeRight() {
+        if (viewPager != null && viewPager.getCurrentItem() > 0) {
+            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+        }
     }
 
     private void initViews() {
@@ -59,17 +101,12 @@ public class ParentDashboardActivity extends AppCompatActivity {
         adapter = new ChildDashboardAdapter(this, childrenData);
         viewPager.setAdapter(adapter);
 
-        // Add page transition animation
         viewPager.setPageTransformer(new MarginPageTransformer(50));
     }
 
     private void loadChildrenData() {
-        showLoading();
-
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            return;
-        }
+        if (currentUser == null) return;
 
         db.collection("children")
                 .whereEqualTo("parentId", currentUser.getUid())
@@ -118,56 +155,19 @@ public class ParentDashboardActivity extends AppCompatActivity {
         } else {
             showContent();
             adapter.notifyDataSetChanged();
-            setupViewPager();
-            updateAppBarLabel(viewPager.getCurrentItem());
         }
-    }
-
-    private void setupViewPager() {
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                updateAppBarLabel(position);
-            }
-        });
-    }
-
-    private void updateAppBarLabel(int position) {
-        if (childrenData.size() > position) {
-            appBarLabel.setText(getString(R.string.dashboard_for, childrenData.get(position).getName()));
-        }
-    }
-
-    private void showLoading() {
-        viewPager.setVisibility(View.GONE);
     }
 
     private void showEmpty() {
         viewPager.setVisibility(View.GONE);
     }
 
-    private void setupViewPagerIndicator() {
-        tabLayout.setSelectedTabIndicatorHeight(0);
-        tabLayout.setTabRippleColor(null);
-
-        // Create mediator
-        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(
-                tabLayout, viewPager, (tab, position) -> {
-        }
-        );
-        tabLayoutMediator.attach();
-
-        // Optional: Adjust tab spacing
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            View tab = ((ViewGroup) tabLayout.getChildAt(0)).getChildAt(i);
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) tab.getLayoutParams();
-            params.setMargins(8, 0, 8, 0);
-            tab.requestLayout();
-        }
-    }
-
     private void showContent() {
         viewPager.setVisibility(View.VISIBLE);
+    }
+
+    private void setupViewPagerIndicator() {
+        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {});
+        tabLayoutMediator.attach();
     }
 }
