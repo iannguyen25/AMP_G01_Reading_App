@@ -25,9 +25,9 @@ public class ShakeDetector implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            float x = event.values[0]; // Trục X
-            float y = event.values[1]; // Trục Y
-            float z = event.values[2]; // Trục Z
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
 
             long currentTime = System.currentTimeMillis();
 
@@ -44,6 +44,5 @@ public class ShakeDetector implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Không cần xử lý
     }
 }

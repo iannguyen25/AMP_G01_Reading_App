@@ -1,20 +1,18 @@
 package com.example.amp_g01_reading_app.ui.category;
 
 import androidx.lifecycle.ViewModelProvider;
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.amp_g01_reading_app.R;
 import com.example.amp_g01_reading_app.databinding.FragmentStoryListBinding;
+import com.example.amp_g01_reading_app.ui.bookscreen.BookScreenActivity;
 
 import java.util.ArrayList;
 
@@ -25,21 +23,17 @@ public class StoryListFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Use view binding
         binding = FragmentStoryListBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        // Initialize adapter
         storyAdapter = new StoryAdapter(new ArrayList<>());
+        storyAdapter.setOnItemClickListener(this::navigateToBookScreen);
 
-        // Set up RecyclerView
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(storyAdapter);
 
-        // Initialize ViewModel
         viewModel = new ViewModelProvider(this).get(StoryListViewModel.class);
 
-        // Load stories by genre
         if (getArguments() != null) {
             String genreId = getArguments().getString("genre_id");
             if (genreId != null) {
@@ -49,7 +43,6 @@ public class StoryListFragment extends Fragment {
             }
         }
 
-        // Observe stories
         viewModel.getStories().observe(getViewLifecycleOwner(), stories -> {
             if (stories != null) {
                 storyAdapter.updateStories(stories);
@@ -61,10 +54,15 @@ public class StoryListFragment extends Fragment {
         return view;
     }
 
+    private void navigateToBookScreen(String bookId) {
+        Intent intent = new Intent(getContext(), BookScreenActivity.class);
+        intent.putExtra("storyId", bookId);
+        startActivity(intent);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Clear the binding to avoid memory leaks
         binding = null;
     }
 }

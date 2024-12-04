@@ -27,7 +27,6 @@ import java.util.List;
 
 public class ParentDashboardActivity extends AppCompatActivity implements ShakeDetector.ShakeListener {
     private ViewPager2 viewPager;
-    private TextView appBarLabel;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private List<ChildData> childrenData;
@@ -92,7 +91,7 @@ public class ParentDashboardActivity extends AppCompatActivity implements ShakeD
 
     private void initViews() {
         viewPager = findViewById(R.id.viewPager);
-        appBarLabel = findViewById(R.id.app_bar_label);
+        TextView appBarLabel = findViewById(R.id.app_bar_label);
         ImageView iconBack = findViewById(R.id.icon_back);
         tabLayout = findViewById(R.id.tab_layout);
 

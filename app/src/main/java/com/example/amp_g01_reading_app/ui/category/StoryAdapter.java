@@ -19,7 +19,7 @@ import java.util.List;
 public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHolder> {
 
     public interface OnItemClickListener {
-        void onItemClick(Book book);
+        void onItemClick(String bookId);
     }
 
     private List<Book> stories;
@@ -27,6 +27,10 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
 
     public StoryAdapter(List<Book> stories) {
         this.stories = stories;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
     }
 
     @NonNull
@@ -42,7 +46,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
         Book book = stories.get(position);
         holder.titleTextView.setText(book.getTitle());
         holder.authorTextView.setText(book.getAuthor());
-        holder.bookCover.setImageResource(book.getCoverResourceId());
         Glide.with(holder.bookCover.getContext())
                 .load(book.getCover_image())
                 .placeholder(R.drawable.placeholder_image)
@@ -51,7 +54,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
 
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
-                onItemClickListener.onItemClick(book);
+                onItemClickListener.onItemClick(book.getId());
             }
         });
     }
@@ -61,7 +64,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
         return stories.size();
     }
 
-    // Method to update the stories data
     @SuppressLint("NotifyDataSetChanged")
     public void updateStories(List<Book> newStories) {
         this.stories = newStories;
