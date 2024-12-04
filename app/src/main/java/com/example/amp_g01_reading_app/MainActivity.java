@@ -99,26 +99,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupNavigation(ActivityMainBinding binding) {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        NavigationUI.setupWithNavController(binding.navView, navController);
 
-        binding.navView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-
-            // Handle navigation item clicks
-            if (itemId == R.id.navigation_home) {
-                navController.navigate(R.id.navigation_home);
-                return true;
-            } else if (itemId == R.id.navigation_category) {
-                navController.navigate(R.id.navigation_category);
-                return true;
-            } else if (itemId == R.id.navigation_bookmark) {
-                navController.navigate(R.id.navigation_bookmark);
-                return true;
-            } else if (itemId == R.id.navigation_settings) {
-                navController.navigate(R.id.navigation_settings);
-                return true;
-            } else {
-                return false;
+        Intent intent = getIntent();
+        if (intent != null) {
+            if (intent.hasExtra("NAV_DESTINATION")) {
+                int destinationId = intent.getIntExtra("NAV_DESTINATION", R.id.navigation_home);
+                navController.navigate(destinationId);
+            } else if (intent.hasExtra("SHOW_FRAGMENT") && "BookmarkFragment".equals(intent.getStringExtra("SHOW_FRAGMENT"))) {
+                navController.navigate(R.id.global_action_to_bookmark);
             }
+        }
+
+        // Set up bottom navigation view with the NavController
+        binding.navView.setOnItemSelectedListener(item -> {
+            navController.navigate(item.getItemId());
+            return true;
         });
     }
 

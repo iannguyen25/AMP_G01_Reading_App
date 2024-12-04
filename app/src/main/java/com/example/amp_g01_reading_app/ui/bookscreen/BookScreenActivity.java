@@ -175,6 +175,12 @@ public class BookScreenActivity extends AppCompatActivity {
                     viewModel.getBook().getValue().getAuthor(),viewModel.getBook().getValue().getAge_group(),
                     viewModel.getBook().getValue().getCover_image());
 
+            Intent intent = new Intent(BookScreenActivity.this, MainActivity.class);
+            intent.putExtra("SHOW_FRAGMENT", "BookmarkFragment");
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+
             // Lắng nghe kết quả từ ViewModel
             bookmarkViewModel.getErrorMessage().observe(this, message -> {
                 if (message != null) {

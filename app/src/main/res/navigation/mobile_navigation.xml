@@ -21,11 +21,18 @@
         android:id="@+id/navigation_bookmark"
         android:name="com.example.amp_g01_reading_app.ui.bookmark.BookmarkFragment"
         android:label="Danh sách yêu thích"
-        tools:layout="@layout/fragment_bookmark" />
+        tools:layout="@layout/fragment_bookmark">
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_settings"
         android:name="com.example.amp_g01_reading_app.ui.settings.ParentSettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_settings"/>
+
+    <action
+        android:id="@+id/global_action_to_bookmark"
+        app:destination="@id/navigation_bookmark" />
+
 </navigation>
+
