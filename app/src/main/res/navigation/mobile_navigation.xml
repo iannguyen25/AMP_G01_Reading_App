@@ -34,5 +34,9 @@
         android:id="@+id/global_action_to_bookmark"
         app:destination="@id/navigation_bookmark" />
 
+    <action
+        android:id="@+id/global_action_to_list_category"
+        app:destination="@id/navigation_category" />
+
 </navigation>
 

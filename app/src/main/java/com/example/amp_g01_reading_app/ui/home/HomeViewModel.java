@@ -239,6 +239,10 @@ public class HomeViewModel extends ViewModel {
         return newBooks;
     }
 
+    public LiveData<Integer> getUserAge() {
+        return userAge;
+    }
+
     public void setUserAge(int age) {
         userAge.setValue(age);
     }
