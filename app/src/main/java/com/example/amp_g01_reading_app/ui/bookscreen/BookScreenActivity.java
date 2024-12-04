@@ -154,10 +154,11 @@ public class BookScreenActivity extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 } if (id == R.id.menu_favorites) {
-                    Intent intent = new Intent(this, MainActivity.class);
+                    Intent intent = new Intent(BookScreenActivity.this, MainActivity.class);
                     intent.putExtra("SHOW_FRAGMENT", "BookmarkFragment");
-                    intent.putExtra("USER_ID", user_id);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+                    finish();
                     return true;
                 }
 
@@ -174,12 +175,6 @@ public class BookScreenActivity extends AppCompatActivity {
             bookmarkViewModel.addBookmark(viewModel.getBook().getValue().getId(),user_id,viewModel.getBook().getValue().getTitle(),
                     viewModel.getBook().getValue().getAuthor(),viewModel.getBook().getValue().getAge_group(),
                     viewModel.getBook().getValue().getCover_image());
-
-            Intent intent = new Intent(BookScreenActivity.this, MainActivity.class);
-            intent.putExtra("SHOW_FRAGMENT", "BookmarkFragment");
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
 
             // Lắng nghe kết quả từ ViewModel
             bookmarkViewModel.getErrorMessage().observe(this, message -> {
