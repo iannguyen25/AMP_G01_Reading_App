@@ -55,19 +55,6 @@ public class StoryListViewModel extends ViewModel {
         });
     }
 
-//    public void filterStoriesByAge(int age) {
-//        List<Book> filteredStories = new ArrayList<>();
-//        List<Book> allStories = storiesLiveData.getValue();
-//        if (allStories != null) {
-//            for (Book book : allStories) {
-//                if (isAgeInGroup(age, book.getAge_group())) {
-//                    filteredStories.add(book);
-//                }
-//            }
-//        }
-//        storiesLiveData.setValue(filteredStories); // Cập nhật danh sách truyện đã lọc
-//    }
-
     private void filterStoriesIfAgeSet() {
         Integer age = userAge.getValue();
         if (age != null && !allStories.isEmpty()) {
