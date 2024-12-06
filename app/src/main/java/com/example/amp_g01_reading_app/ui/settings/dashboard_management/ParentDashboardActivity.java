@@ -1,12 +1,14 @@
 package com.example.amp_g01_reading_app.ui.settings.dashboard_management;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -96,6 +98,11 @@ public class ParentDashboardActivity extends AppCompatActivity implements ShakeD
         tabLayout = findViewById(R.id.tab_layout);
 
         iconBack.setOnClickListener(v -> finish());
+        Button buttonGoToSensor = findViewById(R.id.buttonGoToSensor);
+        buttonGoToSensor.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SensorDisplayActivity.class);
+            startActivity(intent);
+        });
 
         adapter = new ChildDashboardAdapter(this, childrenData);
         viewPager.setAdapter(adapter);

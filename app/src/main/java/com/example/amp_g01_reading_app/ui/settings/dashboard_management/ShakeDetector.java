@@ -7,7 +7,7 @@ import android.hardware.SensorManager;
 
 public class ShakeDetector implements SensorEventListener {
 
-    private static final float SHAKE_THRESHOLD = 3.5f; // Ngưỡng gia tốc
+    private static final float SHAKE_THRESHOLD = 2.5f; // Ngưỡng gia tốc
     private static final int SHAKE_TIME_LAPSE = 1000;   // Thời gian giữa các lần lắc (ms)
     private long lastShakeTime = 0;
 

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
@@ -18,13 +18,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ui.settings.dashboard_management.SensorDisplayActivity"
+            android:exported="false" />
         <!-- Combine all activities -->
-<!--        <activity-->
-<!--            android:name=".ui.bookscreen.BookScreenActivity"-->
-<!--            android:exported="false"-->
-<!--        </activity>-->
-
+        <!-- <activity -->
+        <!-- android:name=".ui.bookscreen.BookScreenActivity" -->
+        <!-- android:exported="false" -->
+        <!-- </activity> -->
         <activity
             android:name=".ui.authentication.login.ParentAuthenticationActivity"
             android:exported="false" />
@@ -51,23 +52,22 @@
             android:exported="false" />
         <activity
             android:name=".ui.comments.CommentsActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".ui.bookmark.BookmarkActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.bookscreen.BookScreenActivity"
-            android:exported="false">
-        </activity>
-
+            android:exported="false"></activity>
     </application>
 
 </manifest>
